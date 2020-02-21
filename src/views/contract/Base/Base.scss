@@ -1,0 +1,26 @@
+.step-scale-table {
+
+  thead {
+    display: none;
+  }
+
+  th,
+  td {
+    line-height: 2;
+  }
+}
+
+.more-step-scale-table {
+  li {
+    margin-bottom: 10px;
+    border-bottom: 1px solid #DCDFE6;
+
+    &:last-child {
+      border-bottom: none
+    }
+
+    .game-name {
+      margin-bottom: 2px;
+    }
+  }
+}

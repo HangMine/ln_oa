@@ -1,0 +1,20 @@
+.context-menu {
+  position: fixed;
+  background: #fff;
+  outline: none;
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  padding: 5px 0;
+  font-size: 12px;
+  cursor: pointer;
+  z-index: 1;
+
+  li {
+    min-width: 130px;
+    padding: 6px 15px;
+
+    &:hover {
+      background-color: #e6f7ff;
+    }
+  }
+}

@@ -1,0 +1,43 @@
+.header {
+  height: 64px;
+  padding: 0 24px;
+  background: #fff;
+  box-shadow: 0 1px 4px rgba(0, 21, 41, .08);
+
+  .collapse-icon {
+    font-size: 20px;
+  }
+
+  .operate-doc {
+    float: right;
+    cursor: pointer;
+  }
+
+  .user {
+    float: right;
+    cursor: pointer;
+    padding: 0 20px;
+
+    &:hover {
+      background: rgba(0, 0, 0, .025);
+    }
+
+    .user-avatar {
+      margin-right: 10px;
+
+      // >img {
+      //   width: 80%;
+      //   height: 80%;
+      // }
+    }
+  }
+
+
+}
+
+// 在body里面
+.user-menu {
+  .user-menu-icon {
+    margin-right: 10px;
+  }
+}

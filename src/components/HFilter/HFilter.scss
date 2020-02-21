@@ -1,0 +1,25 @@
+.h-filter {
+  margin-bottom: 16px;
+
+  // 所有按钮
+  .ant-btn {
+    +.ant-btn {
+      margin-left: 10px;
+    }
+  }
+
+  .has-error {
+    .ant-upload {
+      .ant-btn {
+        border-color: #f5222d;
+      }
+    }
+  }
+
+  // 文件上传列表的图标变大
+  .ant-upload-list-item-card-actions .anticon {
+    font-size: 18px;
+    vertical-align: middle;
+  }
+
+}

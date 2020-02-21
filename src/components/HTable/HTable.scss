@@ -1,0 +1,59 @@
+.h-table {
+
+  // 表格里的ul
+  ul {
+    margin-bottom: 0;
+  }
+
+  // 可伸缩列样式，必须加这两个样式，否则拖动不生效（z-index的原因）
+  .react-resizable {
+    position: relative;
+    background-clip: padding-box;
+  }
+
+  .react-resizable-handle {
+
+    // 手动添加，否则右固定列的左侧会出现小缝隙
+    &:last-child {
+      right: 0;
+    }
+
+    position: absolute;
+    width: 10px;
+    height: 100%;
+    bottom: 0;
+    right: -5px;
+    cursor: col-resize;
+    z-index: 1;
+  }
+
+  // 按钮组
+  .btn-rows {
+    margin-bottom: 16px;
+  }
+
+  // 操作列 link按钮
+  .ant-btn-link {
+    padding: 0;
+  }
+
+  // 表格（不在HTable.scss里面设置是因为重新加载的时候会）
+  .h-table-main {
+    // width: 100%;
+
+    th,
+    td {
+      font-size: 12px;
+    }
+
+    .ant-table-row>td {
+      padding: 4px 8px !important;
+
+      button {
+        height: initial;
+        font-size: 12px;
+      }
+    }
+  }
+
+}

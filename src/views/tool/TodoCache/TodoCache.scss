@@ -1,0 +1,33 @@
+.todo-cache {
+  .block {
+    display: block;
+  }
+
+  .filter {
+    .filter-input-wrap {
+
+
+
+      +.filter-input-wrap {
+        margin-left: 15px;
+      }
+
+      .filter-input-name {
+        margin-right: 5px;
+      }
+
+      .filter-input {
+        width: 200px;
+      }
+
+      .filter-textarea {
+        width: 100%;
+      }
+    }
+
+  }
+
+  .btn-group {
+    margin: 15px 0;
+  }
+}

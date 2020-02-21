@@ -1,0 +1,109 @@
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+// 所有按钮
+.ant-btn {
+  +.ant-btn {
+    margin-left: 10px;
+  }
+}
+
+// 修改列表样式
+ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+// 页面跳转加载
+.view-loading {
+  text-align: center;
+  margin-top: 50px;
+}
+
+// 状态颜色-----------------------
+.green {
+  color: #52c41a
+}
+
+.red {
+  color: #f5222d
+}
+
+.yellow {
+  color: #faad14
+}
+
+.blue {
+  color: #1890ff
+}
+
+// 下拉框去除最大高度----------------
+.auto-height {
+  .ant-select-dropdown-menu {
+    max-height: initial;
+  }
+
+}
+
+// 必填样式
+.required::before {
+  display: inline-block;
+  margin-right: 4px;
+  color: #f5222d;
+  font-size: 14px;
+  font-family: SimSun, sans-serif;
+  line-height: 1;
+  content: '*';
+}
+
+
+// 滚动条样式---------------------
+/*高宽分别对应 横 竖 滚动条的尺寸*/
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-thumb {
+  /*滚动条里面小方块*/
+  border-radius: 5px;
+  background: rgba(144, 147, 153, .3);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(144, 147, 153, .5);
+}
+
+::-webkit-scrollbar-track {
+  /*滚动条里面轨道*/
+  border-radius: 5px;
+  // background: #EDEDED;
+}
+
+
+// 打印----------------------------
+// 去掉页头页尾
+@page {
+  margin: 0mm;
+}
+
+// 打印时样式
+@media print {
+
+  // 去除消息提示框
+  .ant-message {
+    display: none;
+  }
+}

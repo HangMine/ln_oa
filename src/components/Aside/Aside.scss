@@ -1,0 +1,28 @@
+@import "@/assets/css/var.scss";
+@import "@/assets/css/mixin.scss";
+
+.aside {
+  box-shadow: 2px 0 6px rgba(0, 21, 41, .35);
+  position: relative;
+  min-height: 100vh;
+
+  a {
+    color: white;
+  }
+
+  .icon-empty {
+    display: inline-block;
+    width: 24px;
+  }
+
+  .menu-loading {
+    position: absolute;
+    left: 50%;
+    top: 20%;
+    transform: translate(-50%, -50%);
+
+    .ant-spin-text {
+      margin-top: 20px;
+    }
+  }
+}

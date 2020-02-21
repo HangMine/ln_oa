@@ -1,0 +1,62 @@
+.print-table-wrap {
+  text-align: center;
+  color: black;
+
+  .print-table {
+    display: inline-block;
+    table-layout: fixed;
+    border: 1px solid black;
+    border-bottom: none;
+    border-right: none;
+    font-size: 13px;
+    text-align: center;
+    margin: 20px;
+    position: relative;
+
+    .table-logo {
+      position: absolute;
+      left: 2px;
+      top: 2px;
+      height: 36px;
+    }
+
+    .table-check-box-wrap {
+      margin-left: 10px;
+    }
+
+    .table-check-box {
+      display: block;
+      width: 10px;
+      height: 10px;
+      border: 1px solid black;
+    }
+
+    .left {
+      text-align: left;
+    }
+
+    .bold {
+      font-weight: bold;
+    }
+
+    .date-block {
+      display: inline-block;
+      width: 20px;
+    }
+
+    tr {
+      line-height: 2;
+    }
+
+    .fat-tr {
+      line-height: 3;
+    }
+
+    th,
+    td {
+      border-bottom: 1px solid black;
+      border-right: 1px solid black;
+      padding: 0 10px
+    }
+  }
+}

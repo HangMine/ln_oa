@@ -1,0 +1,62 @@
+@import "~@/assets/css/mixin.scss";
+
+.flow-modal {
+  max-height: 80vh;
+
+  .ant-modal-body {
+    max-height: 70vh;
+    overflow: auto;
+  }
+
+  .formsave-btn {
+    position: absolute;
+    right: 60px;
+    top: 10px;
+  }
+}
+
+// 历史文件模态框
+.history-model {
+
+  // 
+  .history-list {
+    li {
+      position: relative;
+      padding: 0 5px;
+      @include ellipsis;
+
+      padding-right: 30px;
+
+      i {
+        color: rgba(0, 0, 0, 0.45);
+      }
+
+      .file-icon {
+        margin-right: 10px;
+      }
+
+      .hover-icon {
+        display: none;
+        position: absolute;
+        right: 5px;
+        top: 2px;
+        font-size: 18px;
+      }
+
+      &:hover {
+        background-color: #e6f7ff;
+
+        a {
+          color: #40a9ff;
+        }
+
+
+        .hover-icon {
+          display: initial;
+          cursor: pointer;
+
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,54 @@
+@import '~@/assets/css/mixin';
+
+.login {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  background: #f0f2f5;
+
+  .login-main {
+    @include position('center');
+    top: 35vh;
+    width: 350px;
+    max-width: 100%;
+    padding: 15px;
+
+    .login-header {
+      text-align: center;
+
+      .login-logo {
+        width: 60px;
+        height: 100%;
+        margin-right: 20px;
+      }
+
+      .login-title {
+        display: inline-block;
+        color: rgba(0, 0, 0, .85);
+        font-weight: 500;
+        font-size: 24px;
+        font-family: Avenir, Helvetica Neue, Arial, Helvetica, sans-serif;
+        vertical-align: -6px;
+      }
+    }
+
+    .login-body {
+      margin-top: 30px;
+
+      .login-input {
+        // margin-bottom: 20px;
+        color: 'rgba(0,0,0,.25)'
+      }
+
+      .auto-login {
+        margin-bottom: 20px;
+      }
+
+      .login-btn {
+        margin-bottom: 20px;
+        margin-left: 0;
+      }
+    }
+
+  }
+}

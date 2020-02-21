@@ -1,0 +1,41 @@
+.h-table-header {
+  display: inline-block;
+  line-height: 40px;
+  margin-right: 10px;
+
+
+}
+
+.h-table-header-modal {
+
+
+  // 筛选框
+  .h-table-header-filter {
+    margin-bottom: 15px;
+  }
+
+  // 穿梭框
+  .h-table-header-transfer {
+
+    // 配合下面居中布局
+    text-align: center;
+
+    >div {
+      text-align: left;
+    }
+
+    // 覆盖全局增加的按钮间距
+    .ant-btn+.ant-btn {
+      margin-left: 0;
+    }
+
+    // 拖拽项
+    .drag-item {
+      display: inline-block;
+      width: calc(100% - 25px);
+    }
+
+  }
+
+
+}

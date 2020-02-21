@@ -1,0 +1,15 @@
+  // ---------------兼容移动端
+  .mobile {
+
+    // 搜索、重置、导出按钮
+    .filt-btn {
+      width: 100%;
+      margin-left: 0;
+    }
+
+    // 多选框
+    .ant-form-item,
+    .ant-select {
+      max-width: 100%;
+    }
+  }
