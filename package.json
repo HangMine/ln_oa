@@ -166,5 +166,6 @@
     "@types/react-router-dom": "^5.1.0",
     "@types/redux-logger": "^3.0.7",
     "babel-plugin-import": "^1.12.2",
+    "pre-commit": "^1.2.2"
   }
 }
