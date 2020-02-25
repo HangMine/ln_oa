@@ -6,6 +6,7 @@ import http from '@/assets/js/http';
 import HFilter from '@/components/HFilter/HFilter';
 import { timeFormat, handleUpload } from '@/assets/js/common';
 import { useCurrent } from '../use/useCurrent';
+import DragableModal from './DragableModal';
 type HMdeolProp = {
     filters: filters;
     url: string;
@@ -169,7 +170,7 @@ const HModel: FC<HMdeolProp> = ({
     };
 
     return (
-        <Modal
+        <DragableModal
             title={title || data.title || (data.isEdit ? '编辑' : '新增')}
             destroyOnClose={hasImmediate}
             visible={data.show}
@@ -197,7 +198,7 @@ const HModel: FC<HMdeolProp> = ({
             ]}
             {...otherProps}>
             <HFilter cols={cols} data={filters} onForm={(form: any) => setform(form)}></HFilter>
-        </Modal>
+        </DragableModal>
     );
 };
 

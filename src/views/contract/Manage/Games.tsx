@@ -66,7 +66,7 @@ const Games: FC<GamesProps> = forwardRef(({ value, onChange, disabled = false },
     const rowChange = (key: 'game_name', value: any, index: number) => {
         settableData((rows) => {
             rows[index][key] = value;
-            return [...rows];
+            return JSON.parse(JSON.stringify(rows));
         });
     };
 

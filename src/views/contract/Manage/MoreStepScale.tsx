@@ -36,7 +36,7 @@ const MoreStepScale: FC<MoreStepScaleProps> = forwardRef(({ value, onChange, dis
     const handleChange = (key: 'game_name' | 'division', value: any, i: number) => {
         setrows((rows) => {
             rows[i][key] = value;
-            return [...rows];
+            return JSON.parse(JSON.stringify(rows));
         });
     };
 

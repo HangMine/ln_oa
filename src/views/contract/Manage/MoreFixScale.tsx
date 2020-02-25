@@ -78,15 +78,21 @@ const StepScale: FC<StepScaleProps> = forwardRef(({ value, onChange, disabled = 
 
     // 监听下拉框变化
     const rowChange = (key: string, value: string, index: number) => {
-        const newTableData: obj[] = tableData.map((item, i) => {
-            return i === index
-                ? {
-                      ...item,
-                      [key]: value,
-                  }
-                : item;
+        // const newTableData: obj[] = tableData.map((item, i) => {
+        //     return i === index
+        //         ? {
+        //               ...item,
+        //               [key]: value,
+        //           }
+        //         : item;
+        // });
+        // JSON.parse(JSON.stringify(rows))
+        // settableData(newTableData);
+
+        settableData((tableData) => {
+            tableData[index][key] = value;
+            return JSON.parse(JSON.stringify(tableData));
         });
-        settableData(newTableData);
     };
 
     // 增加编辑表格行

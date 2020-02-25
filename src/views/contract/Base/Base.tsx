@@ -7,6 +7,7 @@ import StepScale from '@/views/contract/Manage/StepScale';
 import ReturnRate from '@/views/contract/Manage/ReturnRate';
 import MoreStepScale from '@/views/contract/Manage/MoreStepScale';
 import MoreFixScale from '@/views/contract/Manage/MoreFixScale';
+import Games from '@/views/contract/Manage/Games';
 import './Base.scss';
 // 接口
 const url = 'contract.base.table';
@@ -500,13 +501,17 @@ const Base: FC = () => {
         let newFilters: filters = [];
         let newFilter: filterItem;
         for (let filter of filters) {
+            newFilter = {
+                key: filter.key,
+                title: filter.title,
+            };
             switch (filter.key) {
+                // 游戏项目，替换成有+号的
+                case 'game_name':
+                    newFilter.tsx = <Games></Games>;
+                    break;
                 // 根据分成类型显示分成比例
                 case 'division':
-                    newFilter = {
-                        key: 'division',
-                        title: filter.title,
-                    };
                     switch (row.share_type) {
                         case '固定分成':
                             newFilter = {
@@ -522,13 +527,13 @@ const Base: FC = () => {
                             };
                             break;
                         case '阶梯分成':
-                            newFilter.tsx = <StepScale disabled={filter.type === 'look'}></StepScale>;
+                            newFilter.tsx = <StepScale></StepScale>;
                             break;
                         case '多游戏阶梯分成':
-                            newFilter.tsx = <MoreStepScale disabled={filter.type === 'look'}></MoreStepScale>;
+                            newFilter.tsx = <MoreStepScale></MoreStepScale>;
                             break;
                         case '多游戏固定分成':
-                            newFilter.tsx = <MoreFixScale disabled={filter.type === 'look'}></MoreFixScale>;
+                            newFilter.tsx = <MoreFixScale></MoreFixScale>;
                             break;
 
                         default:
@@ -538,20 +543,24 @@ const Base: FC = () => {
                     break;
 
                 case 'return_rate':
-                    newFilter = {
-                        key: 'return_rate',
-                        title: '返点率',
-                        tsx: <ReturnRate></ReturnRate>,
-                    };
+                    newFilter.tsx = <ReturnRate></ReturnRate>;
+                    // newFilter = {
+                    //     key: 'return_rate',
+                    //     title: '返点率',
+                    //     tsx: <ReturnRate></ReturnRate>,
+                    // };
                     break;
                 case 'review_date':
                     // 【财务复核时间】如果有值不可编辑
-                    newFilter = {
-                        key: 'review_date',
-                        title: '财务复核时间',
-                        props: {
-                            disabled: !!row.review_date,
-                        },
+                    // newFilter = {
+                    //     key: 'review_date',
+                    //     title: '财务复核时间',
+                    //     props: {
+                    //         disabled: !!row.review_date,
+                    //     },
+                    // };
+                    newFilter.props = {
+                        disabled: !!row.review_date,
                     };
                     break;
                 default:
@@ -584,6 +593,23 @@ const Base: FC = () => {
 
     // 自定义的列
     const columns = [
+        {
+            dataIndex: 'game_name',
+            width: 70,
+            render: (value: any, recode: obj, index: number) => {
+                if (Array.isArray(value)) {
+                    return (
+                        <ul>
+                            {value.map((item, i) => (
+                                <li key={i}>{item.game_name}</li>
+                            ))}
+                        </ul>
+                    );
+                } else {
+                    return value;
+                }
+            },
+        },
         {
             dataIndex: 'division',
             merge: true,
@@ -625,7 +651,6 @@ const Base: FC = () => {
                 );
                 switch (recode.share_type) {
                     case '固定分成':
-                        value = '';
                         return addPercent(value);
                     case '阶梯分成':
                         if (!Array.isArray(value)) value = [];
