@@ -7,12 +7,13 @@ import HFilter from '@/components/HFilter/HFilter';
 import { timeFormat, handleUpload } from '@/assets/js/common';
 import { useCurrent } from '../use/useCurrent';
 import DragableModal from './DragableModal';
+import { LocationState } from 'history';
 type HMdeolProp = {
     filters: filters;
     url: string;
-    params?: obj;
+    params?: LocationState;
     commitUrl: string;
-    commitParams?: obj;
+    commitParams?: LocationState;
     httpType?: string;
     data: {
         show: boolean;

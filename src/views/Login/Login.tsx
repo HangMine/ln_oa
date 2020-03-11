@@ -31,7 +31,6 @@ const Login: React.FC<any> = ({ form }) => {
 
             http.post('pub.login', values).then((res) => {
                 if (res.code !== 0) {
-                    message.error(res.msg);
                     return;
                 }
                 history.push('/');

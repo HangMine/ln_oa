@@ -6,6 +6,7 @@ import HModel from '@/components/HModel/HModel';
 // import MoreStepScale from '@/views/contract/Manage/MoreStepScale';
 // import MoreFixScale from '@/views/contract/Manage/MoreFixScale';
 import Games from '@/views/contract/Manage/Games';
+import Channels from '@/views/contract/Manage/Channels';
 import http from '@/assets/js/http';
 
 // 接口
@@ -63,7 +64,7 @@ const Legal: FC = () => {
     ];
 
     // 新增编辑筛选框
-    const [editFilters, seteditFilters]: [filters, any] = useState([]);
+    const [editFilters, seteditFilters] = useState<filters>([]);
 
     // 前端对表单进行二次处理
     const handleFilters = (filters: filters, row: obj) => {
@@ -111,6 +112,12 @@ const Legal: FC = () => {
                     newFilter = {
                         ...filter,
                         tsx: <Games></Games>,
+                    };
+                    break;
+                case 'channel':
+                    newFilter = {
+                        ...filter,
+                        tsx: <Channels></Channels>,
                     };
                     break;
                 default:
@@ -168,6 +175,11 @@ const Legal: FC = () => {
         type: 'select',
         options: allOptions.is_audit,
     };
+    const totalPriceFilter = {
+        key: 'total_price',
+        title: '合同总金额（元）',
+        type: 'input',
+    };
     useEffect(() => {
         switch (tab) {
             case 'LY':
@@ -184,9 +196,20 @@ const Legal: FC = () => {
                         type: 'select',
                         options: allOptions.game_type,
                     },
+
                     {
                         key: 'game_name',
                         title: '游戏项目',
+                        type: 'input',
+                    },
+                    {
+                        key: 'device_type',
+                        title: '游戏版本',
+                        type: 'input',
+                    },
+                    {
+                        key: 'auth_area',
+                        title: '授权区域',
                         type: 'input',
                     },
                     {
@@ -309,6 +332,7 @@ const Legal: FC = () => {
                         title: '主要内容',
                         type: 'input',
                     },
+                    totalPriceFilter,
                     startTimeFilter,
                     ...endTimeFilter,
 
@@ -328,6 +352,7 @@ const Legal: FC = () => {
                     feedbackDateFilter,
                 ];
                 seteditFilters(FW);
+                break;
             case 'WB':
                 //外包类
                 const WB = [
@@ -370,11 +395,7 @@ const Legal: FC = () => {
                         title: '最终交付时间',
                         type: 'input',
                     },
-                    {
-                        key: 'total_price',
-                        title: '合同总金额（元）',
-                        type: 'input',
-                    },
+                    totalPriceFilter,
                     contractStatusFilter,
                     {
                         key: 'content',
@@ -396,6 +417,7 @@ const Legal: FC = () => {
                     feedbackDateFilter,
                 ];
                 seteditFilters(WB);
+                break;
             case 'XZ':
                 //行政类
                 const XZ = [
@@ -405,8 +427,8 @@ const Legal: FC = () => {
                         type: 'input',
                     },
                     {
-                        key: 'contract_party',
-                        title: '签约方',
+                        key: 'project',
+                        title: '项目',
                         type: 'input',
                     },
                     {
@@ -432,6 +454,7 @@ const Legal: FC = () => {
                         title: '发起人',
                         type: 'input',
                     },
+                    totalPriceFilter,
                     startTimeFilter,
                     ...endTimeFilter,
                     contractStatusFilter,
@@ -455,6 +478,7 @@ const Legal: FC = () => {
                     feedbackDateFilter,
                 ];
                 seteditFilters(XZ);
+                break;
             default:
                 break;
         }
@@ -470,8 +494,9 @@ const Legal: FC = () => {
 
     // 编辑
     const edit = (row: obj) => {
-        const handledFilters = handleFilters(editFilters, row);
-        seteditFilters(handledFilters, row);
+        seteditFilters((editFilters) => {
+            return handleFilters(editFilters, row);
+        });
 
         seteditData({
             ...editData,
@@ -485,13 +510,32 @@ const Legal: FC = () => {
     const columns = [
         {
             dataIndex: 'game_name',
-            width: 70,
+            merge: true,
+            width: 150,
             render: (value: any, recode: obj, index: number) => {
                 if (Array.isArray(value)) {
                     return (
                         <ul>
                             {value.map((item, i) => (
                                 <li key={i}>{item.game_name}</li>
+                            ))}
+                        </ul>
+                    );
+                } else {
+                    return value;
+                }
+            },
+        },
+        {
+            dataIndex: 'channel',
+            merge: true,
+            width: 150,
+            render: (value: any, recode: obj, index: number) => {
+                if (Array.isArray(value)) {
+                    return (
+                        <ul>
+                            {value.map((item, i) => (
+                                <li key={i}>{item.channel}</li>
                             ))}
                         </ul>
                     );

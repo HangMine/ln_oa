@@ -10,7 +10,7 @@ type errorProps = {
 };
 
 const Error: FC<errorProps> = ({ status, title, subTitle, extra }) => {
-    const error = history.location.state || {
+    const error: any = history.location.state || {
         status: 'error',
         title: '页面错误',
         subTitle: '错误信息:渲染错误,请联系管理员',

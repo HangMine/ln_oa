@@ -28,7 +28,7 @@ const cookie = {
         document.cookie = `${key}=${value};${expires};path=/`;
     },
     get: (key: string) => {
-        const map = cookie.map;
+        const map = cookie.map();
         return map[key] || '';
     },
     del: (key: string | string[]) => {
@@ -39,7 +39,7 @@ const cookie = {
             key.forEach((item) => del(item));
         }
     },
-    map: (() => {
+    map: () => {
         let cookieMap: obj = {};
         if (document.cookie) {
             const cookieList = document.cookie.split(';');
@@ -51,7 +51,7 @@ const cookie = {
         }
 
         return cookieMap;
-    })(),
+    },
 };
 
 // 首字母大写

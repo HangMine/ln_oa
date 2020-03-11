@@ -1,4 +1,4 @@
-import React, { FC, memo, useState, useEffect, useRef, Children } from 'react';
+import React, { FC, memo, useState, useEffect, useRef, useMemo, Children } from 'react';
 import http from '@/assets/js/http';
 import { useMappedState, useDispatch } from 'redux-react-hook';
 import { useCurrent } from '@/components/use/useCurrent';
@@ -6,6 +6,7 @@ import HFilter from '@/components/HFilter/HFilter';
 import { fetchTable } from '@/redux/actions';
 import { timeFormat, handleUpload } from '@/assets/js/common';
 import { Button, Modal, Card, Empty, Icon, Spin } from 'antd';
+import DragableModal from '@/components/HModel/DragableModal';
 import './FlowModel.scss';
 
 // 合同发起接口
@@ -26,21 +27,12 @@ type FlowModelProps = {
     filters: filters;
     data: obj;
     setData: any;
-
     [any: string]: any;
 };
 
-const FlowModel: FC<FlowModelProps> = ({
-    children,
-    url,
-    parmas,
-    filters,
-    data,
-    setData,
-
-    ...ohterProps
-}) => {
+const FlowModel: FC<FlowModelProps> = ({ children, url, parmas, filters, data, setData, ...ohterProps }) => {
     const dispatch = useDispatch();
+    const [loading, setloading] = useState(false);
     const filterParams = useMappedState((state) => state.filterParams);
     const [form, setform]: [any, any] = useState({});
     const { validateFields, resetFields, validateFieldsAndScroll, getFieldsValue } = form;
@@ -126,7 +118,7 @@ const FlowModel: FC<FlowModelProps> = ({
                     setValues(data.row);
                 }, 100);
             }
-        }, 100);
+        }, 200);
     }, [data, form]);
 
     // 处理需要马上执行的函数
@@ -325,10 +317,7 @@ const FlowModel: FC<FlowModelProps> = ({
             });
             if (!Object.keys(signValues).length) return;
 
-            setData({
-                ...data,
-                loading: true,
-            });
+            setloading(true);
 
             // 判断是新增还是审核流
             let resCommitUrl = '';
@@ -366,10 +355,7 @@ const FlowModel: FC<FlowModelProps> = ({
             }
 
             http.post(resCommitUrl, commitParams).then((res) => {
-                setData({
-                    ...data,
-                    loading: false,
-                });
+                setloading(false);
                 if (res.code == 0) {
                     setData({
                         ...data,
@@ -421,9 +407,18 @@ const FlowModel: FC<FlowModelProps> = ({
         sethistoryFiles(historyFiles);
     };
 
+    const CheckFilterElement = useMemo(
+        () => (
+            <Card title="合同审批单" bordered={false}>
+                <HFilter data={checkFilters} onForm={(form: any) => setform(form)}></HFilter>
+            </Card>
+        ),
+        [checkFilters]
+    );
+
     return (
         <>
-            <Modal
+            <DragableModal
                 {...ohterProps}
                 visible={data.show}
                 width={1000}
@@ -461,58 +456,54 @@ const FlowModel: FC<FlowModelProps> = ({
                         }>
                         取消
                     </Button>,
-                    <Button key="commit" type="primary" loading={data.loading} onClick={commit}>
+                    <Button key="commit" type="primary" loading={loading} onClick={commit}>
                         确定
                     </Button>,
                 ]}
                 bodyStyle={{ background: 'rgb(240, 242, 245)' }}>
-                <Spin spinning={!!data.spinning}>
-                    <Card title="合同审批单" bordered={false}>
-                        <HFilter data={checkFilters} onForm={(form: any) => setform(form)}></HFilter>
+                {CheckFilterElement}
+
+                {!['look'].includes(data.type) && (
+                    <Card title="合同签字意见" bordered={false} style={{ marginTop: '20px' }}>
+                        <HFilter data={signFilters} onForm={(form: any) => setSignform(form)}></HFilter>
                     </Card>
+                )}
 
-                    {!['look'].includes(data.type) && (
-                        <Card title="合同签字意见" bordered={false} style={{ marginTop: '20px' }}>
-                            <HFilter data={signFilters} onForm={(form: any) => setSignform(form)}></HFilter>
-                        </Card>
-                    )}
-
-                    {
-                        <Card title="审核流相关日志" bordered={false} style={{ marginTop: '20px' }}>
-                            {Array.isArray(data.row.flowLogs) && data.row.flowLogs.length > 0 && (
-                                <table style={{ width: '100%' }}>
-                                    <colgroup style={{ width: 60 }}></colgroup>
-                                    <colgroup style={{ width: 80 }}></colgroup>
-                                    <colgroup></colgroup>
-                                    <colgroup style={{ width: 100 }}></colgroup>
-                                    <colgroup style={{ width: 160 }}></colgroup>
-                                    <tbody>
-                                        {data.row.flowLogs.map((flow: obj, i: number) => (
-                                            <tr key={i}>
-                                                <td>{flow.name} </td>
-                                                <td>{flow.action}</td>
-                                                <td>{flow.remark}</td>
-                                                <td>
-                                                    {flow.src && flow.src.length > 0 && (
-                                                        <Button type="link" onClick={() => openHistory(i)}>
-                                                            历史文件
-                                                        </Button>
-                                                    )}
-                                                </td>
-                                                <td>{flow.o_time}</td>
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
-                            )}
-                            {(!Array.isArray(data.row.flowLogs) ||
-                                (Array.isArray(data.row.flowLogs) && !data.row.flowLogs.length)) && (
-                                <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
-                            )}
-                        </Card>
-                    }
-                </Spin>
-            </Modal>
+                {
+                    <Card title="审核流相关日志" bordered={false} style={{ marginTop: '20px' }}>
+                        {Array.isArray(data.row.flowLogs) && data.row.flowLogs.length > 0 && (
+                            <table style={{ width: '100%' }}>
+                                <colgroup style={{ width: 60 }}></colgroup>
+                                <colgroup style={{ width: 80 }}></colgroup>
+                                <colgroup></colgroup>
+                                <colgroup style={{ width: 100 }}></colgroup>
+                                <colgroup style={{ width: 160 }}></colgroup>
+                                <tbody>
+                                    {data.row.flowLogs.map((flow: obj, i: number) => (
+                                        <tr key={i}>
+                                            <td>{flow.name} </td>
+                                            <td>{flow.action}</td>
+                                            <td>{flow.remark}</td>
+                                            <td>
+                                                {flow.src && flow.src.length > 0 && (
+                                                    <Button type="link" onClick={() => openHistory(i)}>
+                                                        历史文件
+                                                    </Button>
+                                                )}
+                                            </td>
+                                            <td>{flow.o_time}</td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        )}
+                        {(!Array.isArray(data.row.flowLogs) ||
+                            (Array.isArray(data.row.flowLogs) && !data.row.flowLogs.length)) && (
+                            <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
+                        )}
+                    </Card>
+                }
+            </DragableModal>
 
             <Modal
                 title="历史文件"
@@ -547,4 +538,4 @@ const FlowModel: FC<FlowModelProps> = ({
     );
 };
 
-export default FlowModel;
+export default memo(FlowModel);

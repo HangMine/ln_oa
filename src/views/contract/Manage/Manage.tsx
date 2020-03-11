@@ -9,8 +9,10 @@ import ReturnRate from './ReturnRate';
 import MoreStepScale from './MoreStepScale';
 import MoreFixScale from './MoreFixScale';
 import Games from './Games';
+import Channels from './Channels';
 import { to, num2cn } from '@/assets/js/common';
 import { history } from '@/router';
+import { LocationState } from 'history';
 import { useCurrent } from '@/components/use/useCurrent';
 
 // 接口
@@ -67,7 +69,7 @@ const Manage: FC = () => {
             key: 'number',
             title: '合同编号',
             type: 'input',
-            initValue: routeParams.number,
+            initValue: (routeParams as any).number,
         },
         {
             key: 'key',
@@ -305,7 +307,7 @@ const Manage: FC = () => {
             },
         ];
         setaddOnlyFilters(addOnlyFilters);
-    }, [templateList]);
+    }, [templateList, shareFilters]);
 
     // 前端对表单进行二次处理
     const handleFilters = (filters: filters, template_id: string = '', type?: string) => {
@@ -527,9 +529,13 @@ const Manage: FC = () => {
                         filter.options = artCompanysRef.current;
                     }
                     break;
-                // 游戏项目，替换成有+号的
+                // 游戏项目，替换成有+号的，支持多个
                 case 'game_name':
                     filter.tsx = <Games disabled={type === 'look'}></Games>;
+                    break;
+                // 渠道，替换成有+号的，支持多个
+                case 'channel':
+                    filter.tsx = <Channels disabled={type === 'look'}></Channels>;
                     break;
                 default:
                     break;
@@ -548,8 +554,6 @@ const Manage: FC = () => {
     // 合同编辑数据
     const [editData, setEditData]: [any, any] = useState({
         show: false,
-        loading: false,
-        spinning: false,
         isEdit: false,
         row: {},
     });

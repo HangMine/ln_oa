@@ -10,6 +10,7 @@ import http from '@/assets/js/http';
 import Tool from '@/components/HTable/Tool';
 import { copy } from '@/assets/js/common';
 import { Resizable } from 'react-resizable';
+import { LocationState } from 'history';
 import './HTable.scss';
 
 const { TabPane } = Tabs;
@@ -18,7 +19,7 @@ interface TableProp<T> {
     url: string;
     menu?: boolean;
     out?: boolean;
-    params?: obj;
+    params?: LocationState;
     filters?: filters;
     columns?: any[]; //传fixed属性时报错
     // columns?: ColumnProps<T>[],
@@ -29,6 +30,7 @@ interface TableProp<T> {
     handleData?: (any: obj[]) => any;
     onTab?: (activeTab: string) => void;
     onColsChange?: (cols: string[]) => void;
+    onFinish?: (rows: obj[]) => void;
     [any: string]: any;
 }
 
@@ -70,6 +72,7 @@ const HTable: HTableProp = ({
     isMaxHeight,
     onTab,
     onColsChange,
+    onFinish,
     ...otherProps
 }) => {
     const dispatch = useDispatch();
@@ -133,7 +136,8 @@ const HTable: HTableProp = ({
     useEffect(() => {
         if (!tab) return;
         // 根据tab页获取表格
-        setTable({ target: tab });
+        setpageParams({ ...pageParams, page: 1 });
+        setTable({ target: tab, page: 1 });
         // 暴露到父组件
         onTab && onTab(tab);
     }, [tab]);
@@ -366,7 +370,7 @@ const handleMoveColumn = (columns: obj[], handleResize: any) => {
     }));
 };
 
-// 处理表头宽度
+// 处理表头宽度,并且居中显示
 const handleColumnWidth = (columns: obj[], rows: obj[], isMobile: boolean) => {
     columns = columns.map((column) => {
         const contentWidth = getContentMaxWidth(rows, column);
@@ -376,6 +380,7 @@ const handleColumnWidth = (columns: obj[], rows: obj[], isMobile: boolean) => {
         const width = column.width || Math.max(contentWidth, headerWidth) + addWidth + PADDING_WIDTH;
         return {
             width,
+            align: 'center',
             ...column,
         };
     });

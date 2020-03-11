@@ -34,6 +34,7 @@ const StepScale: FC<StepScaleProps> = forwardRef(({ value, onChange, disabled = 
                 <div className="game-wrap">
                     <span>游戏项目：</span>
                     <Input
+                        disabled={disabled}
                         placeholder="请输入游戏项目"
                         value={tableData[index].game_name}
                         onChange={(e) => rowChange('game_name', e.target.value, index)}

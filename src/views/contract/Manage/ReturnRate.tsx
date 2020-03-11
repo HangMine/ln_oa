@@ -12,6 +12,7 @@ type ReturnRateProps = {
 // 这里虽然没用到ref的转发，但必须加上，否则会警告
 const ReturnRate: FC<ReturnRateProps> = forwardRef(({ value, onChange, disabled = false }, ref) => {
     const row = {
+        channel: '',
         startTime: moment(new Date()),
         endTime: moment(new Date()),
         rate: '',
@@ -29,6 +30,19 @@ const ReturnRate: FC<ReturnRateProps> = forwardRef(({ value, onChange, disabled 
     }, [tableData]);
 
     const columns = [
+        {
+            title: '渠道',
+            dataIndex: 'channel',
+            render: (text: string, recode: obj, index: number) => (
+                <Input
+                    disabled={disabled}
+                    style={{ width: 180 }}
+                    allowClear
+                    placeholder="请输入渠道"
+                    value={tableData[index].channel}
+                    onChange={(e) => rowChange('channel', e.target.value, index)}></Input>
+            ),
+        },
         {
             title: '开始日期',
             dataIndex: 'startTime',
