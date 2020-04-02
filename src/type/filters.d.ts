@@ -24,8 +24,15 @@ interface filterItem {
         callback?: (value: any, form: any) => void;
         immediate?: boolean;
     };
-    rules?: { type?: string; required?: boolean; message: string; validator?: any }[];
+    rules?: { type?: string; required?: boolean; message?: string; validator?: any }[];
     props?: { [any: string]: any };
+
+    // -用于checkbox-
+    trueValue?: any;
+    falseValue?: any;
+    isJSON?: boolean;
+    // -用于checkbox-
+
     tsx?: ReactNode | ((form: any) => ReactNode);
 }
 

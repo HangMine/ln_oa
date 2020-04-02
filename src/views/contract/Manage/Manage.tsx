@@ -1,7 +1,7 @@
 import React, { FC, useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import http from '@/assets/js/http';
 import HTable from '@/components/HTable/HTable';
-import { Button } from 'antd';
+import { Button, Menu, Dropdown, Icon, message } from 'antd';
 import useFilters from '@/components/HTable/useFilters';
 import FlowModel from './FlowModel';
 import StepScale from './StepScale';
@@ -14,9 +14,23 @@ import { to, num2cn } from '@/assets/js/common';
 import { history } from '@/router';
 import { LocationState } from 'history';
 import { useCurrent } from '@/components/use/useCurrent';
-
+import { fetchTable } from '@/redux/actions';
+import HModel from '@/components/HModel/HModel';
+import SelectedTags from '@/components/MoreHandle/SelectedTags';
 // 接口
 const url = 'contract.manage.table';
+
+// 批量操作接口
+const moreHandleUrl = 'contract.manage.moreHandle';
+
+// 批量操作筛选框
+const moreHandleFilters = [
+    {
+        key: 'remark',
+        title: '审核信息',
+        type: 'textarea',
+    },
+];
 
 // 额外输入框转换
 const getExtFilters = (apiData = [], values: obj = {}) => {
@@ -122,6 +136,42 @@ const Manage: FC = () => {
             type: 'select',
             optionsUrl: 'pub.event',
             optionsParams: {}, //之后需要根据合同类型设置参数
+        },
+        {
+            key: 'step_name',
+            title: '全局当前节点',
+            type: 'select',
+            optionsUrl: 'contract.manage.step',
+        },
+        {
+            key: 'un_treat',
+            type: 'checkbox',
+            trueValue: '1',
+            falseValue: '',
+            options: [
+                {
+                    key: 'un_treat',
+                    title: '待办事项',
+                },
+            ],
+            props: {
+                className: 'big-check-box',
+            },
+        },
+        {
+            key: 'expire',
+            type: 'checkbox',
+            trueValue: '1',
+            falseValue: '',
+            options: [
+                {
+                    key: 'expire',
+                    title: '距到期2月内',
+                },
+            ],
+            props: {
+                className: 'big-check-box',
+            },
         },
     ];
 
@@ -237,6 +287,47 @@ const Manage: FC = () => {
                 type: 'upload',
                 uploadUrl: 'contract.manage.upload',
                 rules: [{ required: true, message: '请上传文件' }],
+            },
+            {
+                key: 'time_type',
+                title: '时间类型',
+                type: 'radio',
+                options: [
+                    {
+                        id: '1',
+                        name: '时间框',
+                    },
+                    {
+                        id: '2',
+                        name: '输入框',
+                    },
+                ],
+                initValue: '1',
+                react: {
+                    callback(value: string, form: any) {
+                        const dateKeyss: (string | number)[] = ['start_date', 'end_date'];
+                        seteditFilters((editFilters) =>
+                            // 在seteditFilters里面使用form.setFieldsValue，会使控制台报警告，后续需解决
+                            editFilters.map((filter) => {
+                                if (dateKeyss.includes(filter.key)) {
+                                    if (value === '1') {
+                                        filter.type = 'date';
+                                        form.setFieldsValue({
+                                            [`${filter.key}`]: new Date(),
+                                        });
+                                    } else if (value === '2') {
+                                        filter.type = 'input';
+                                        form.setFieldsValue({
+                                            [`${filter.key}`]: '',
+                                        });
+                                    }
+                                }
+                                return filter;
+                            })
+                        );
+                    },
+                    immediate: true,
+                },
             },
             {
                 key: 'start_date',
@@ -518,6 +609,8 @@ const Manage: FC = () => {
                 // 数字+%
                 case 'division': //【我方分成比例】
                 case 'return_rate': //【返点率】(发票类型为【增值税发票】时，才出现发票税率，在上面设置)
+                case 'ratio': //付款比例
+                case 'acratio': //累积比例
                     filter.normalize = 'numberPercent';
                     break;
                 // 美术合同时乙方为下拉框
@@ -546,10 +639,10 @@ const Manage: FC = () => {
     };
 
     // 合同新增独有表单
-    const [addOnlyFilters, setaddOnlyFilters]: [filters, any] = useState([]);
+    const [addOnlyFilters, setaddOnlyFilters] = useState<filters>([]);
 
     // 编辑表单
-    const [editFilters, seteditFilters]: [filters, any] = useState(shareFilters);
+    const [editFilters, seteditFilters] = useState<filters>(shareFilters);
 
     // 合同编辑数据
     const [editData, setEditData]: [any, any] = useState({
@@ -562,10 +655,10 @@ const Manage: FC = () => {
     const print = (row: obj) => {
         if (row.type === '1') {
             // 收入类审批单
-            to('/print/union', { formData: row.approval_form });
+            window.open(`#/print/union/${row.id}`, '_blank');
         } else {
             // 费用类审批单
-            to('/print/cost', { formData: row.approval_form });
+            window.open(`#/print/cost/${row.id}`, '_blank');
         }
     };
 
@@ -580,6 +673,9 @@ const Manage: FC = () => {
         let extEditFilters = [];
         let filters = [];
         switch (type) {
+            case 'renewal':
+                renewal(row);
+                break;
             case 'print':
                 print(row);
                 break;
@@ -625,12 +721,134 @@ const Manage: FC = () => {
         }
     };
 
+    // 可勾选
+    const [selectedRowKeys, setselectedRowKeys] = useState([]);
+    const [selectedRows, setselectedRows] = useState<obj[]>([]);
+    const onSelectChange = useCallback((selectedRowKeys, selectedRows) => {
+        setselectedRowKeys(selectedRowKeys);
+        setselectedRows(selectedRows);
+    }, []);
+    const rowSelection = useMemo(
+        () => ({
+            selectedRowKeys,
+            onChange: onSelectChange,
+            fixed: true,
+        }),
+        [selectedRowKeys]
+    );
+    const selectedTagsEl = useMemo(
+        () => <SelectedTags tip="已勾选以下合同:" tags={selectedRows.map((item) => item.number)}></SelectedTags>,
+        [selectedRows]
+    );
+
+    // 批量操作
+    const moreHandleMap: obj = useMemo(
+        () => ({
+            stamp: '盖章',
+            archive: '归档',
+        }),
+        []
+    );
+    const [moreHandleParams, setmoreHandleParams] = useState<{ id: string[]; action: string }>({
+        id: [],
+        action: '',
+    });
+    const moreHandleCommited = useCallback((res) => {
+        if (res.code == 0) {
+            setselectedRowKeys([]);
+            setselectedRows([]);
+        }
+    }, []);
+    const [moreHandleData, setMoreHandleData] = useState<any>({
+        show: false,
+        isEdit: false,
+        row: {},
+    });
+    const moreHandle = useCallback(
+        (e) => {
+            if (!selectedRows.length) {
+                message.error('请先勾选记录');
+                return;
+            }
+            const params = {
+                id: selectedRows.map((item) => item.id),
+                action: e.key,
+            };
+            setmoreHandleParams(params);
+
+            setMoreHandleData({
+                ...moreHandleData,
+                title: moreHandleMap[e.key],
+                show: true,
+            });
+        },
+        [selectedRows]
+    );
+
+    // 续签
+    const renewalUrl = 'contract.manage.renewal';
+    const renewalFilters = useMemo(
+        () => [
+            {
+                key: 'renewal_info',
+                title: '续签情况',
+                type: 'textarea',
+                placeholder: '请填写200字以内',
+                props: {
+                    rows: 6,
+                },
+                rules: [
+                    {
+                        required: true,
+                        validator(rule: any, value: string, callback: (err?: string) => void) {
+                            if (value === undefined || value.length === 0) {
+                                callback('请填写该字段');
+                            } else if (value.length > 200) {
+                                callback('请填写200字以内');
+                            } else {
+                                callback();
+                            }
+                        },
+                    },
+                ],
+            },
+        ],
+        []
+    );
+    const [renewalData, setrenewalData] = useState<any>({
+        show: false,
+        isEdit: true,
+        row: {},
+    });
+    const renewal = useCallback(
+        (row) => {
+            setrenewalData({
+                ...renewalData,
+                show: true,
+                row,
+            });
+        },
+        [renewalData]
+    );
+
     // 按钮
     const btns = (
         <>
             <Button type="primary" icon="plus" onClick={() => openFlowModel({}, 'add', '合同发起')}>
                 合同发起
             </Button>
+            <Dropdown
+                overlay={
+                    <Menu onClick={moreHandle}>
+                        {Object.entries(moreHandleMap).map(([key, item]) => (
+                            <Menu.Item key={key}>{item}</Menu.Item>
+                        ))}
+                    </Menu>
+                }>
+                <Button>
+                    批量操作 <Icon type="down" />
+                </Button>
+            </Dropdown>
         </>
     );
 
@@ -655,7 +873,8 @@ const Manage: FC = () => {
                 params={routeParams}
                 filters={_tableFilters}
                 btns={btns}
-                rowKey={(recode: any, i: number) => i}></HTable>
+                rowKey={(recode: any, i: number) => i}
+                rowSelection={rowSelection}></HTable>
             {/* 审核流模态框 */}
             <FlowModel
                 title={editData.title}
@@ -663,6 +882,26 @@ const Manage: FC = () => {
                 url={url}
                 data={editData}
                 setData={setEditData}></FlowModel>
+            {/* 批量操作框 */}
+            <HModel
+                front={selectedTagsEl}
+                httpType="post"
+                filters={moreHandleFilters}
+                url={url}
+                commitUrl={moreHandleUrl}
+                commitParams={moreHandleParams}
+                onCommited={moreHandleCommited}
+                data={moreHandleData}
+                setData={setMoreHandleData}></HModel>
+            {/* 续签框 */}
+            <HModel
+                url={url}
+                rowKey="number"
+                title="续签"
+                filters={renewalFilters}
+                commitUrl={renewalUrl}
+                data={renewalData}
+                setData={setrenewalData}></HModel>
         </section>
     );
 };

@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef, ReactNode, useMemo } from 'react';
 import { useMappedState, useDispatch } from 'redux-react-hook';
 import { fetchTable, clearTable, setFilterParams } from '@/redux/actions';
 import { useMapCurrent } from '@/components/use/useCurrent';
-import { Table, Tabs, Button } from 'antd';
+import { Table, Tabs, Button, Tooltip } from 'antd';
 import { ColumnProps } from 'antd/es/table';
 import HFilter from '@/components/HFilter/HFilter';
 import HTableHeader from '@/components/HTable/HTableHeader/HTableHeader';
@@ -99,8 +99,12 @@ const HTable: HTableProp = ({
         ...params,
     });
 
-    // 默认加载表格数据
+    // 监听filters,设置高度，加载表格数据
     useEffect(() => {
+        // filter改变，在改变之后设置高度,需要在确定筛选框高度之后设置高度
+        // setmaxHeight(getTableHeight(isMobile));
+        // confirmMaxHeight();
+
         if (menu) {
             // 有菜单，通过修改tab来触发获取表格
             http(url, { tab: 1 }).then((res) => {
@@ -123,14 +127,7 @@ const HTable: HTableProp = ({
             // 清除表头和表格数据
             dispatch(clearTable());
         };
-    }, []); //这里设置为filters是因为需要在确定筛选框高度之后设置高度
-
-    // 监听filters
-    useEffect(() => {
-        // filter改变，在改变之后设置高度
-        setmaxHeight(getTableHeight(isMobile));
-        confirmMaxHeight();
-    }, [filters]);
+    }, [filters && filters.length]);
 
     // 监听tab
     useEffect(() => {
@@ -377,7 +374,8 @@ const handleColumnWidth = (columns: obj[], rows: obj[], isMobile: boolean) => {
         const headerWidth = getItemLength(column.title);
         const addWidth = column.addWidth || 0;
         const PADDING_WIDTH = 16;
-        const width = column.width || Math.max(contentWidth, headerWidth) + addWidth + PADDING_WIDTH;
+        const calcWidth = Math.min(Math.max(contentWidth, headerWidth), 300); //计算出的宽度最大300
+        const width = column.width || calcWidth + addWidth + PADDING_WIDTH;
         return {
             width,
             align: 'center',
@@ -438,23 +436,29 @@ const handleObjValue = (columns: obj[]) => {
         return {
             ...column,
             render: (obj: any, record: obj, index: number) => {
-                if (obj && obj.toString() === '[object Object]') {
+                if (Object.prototype.toString.call(obj) === '[object Object]') {
+                    const { name, color, explain }: { name: string; color: string; explain: string } = obj;
                     // 如果是对象
-                    if (obj.color) {
-                        // 处理颜色
-                        switch (obj.color) {
-                            case 'green':
-                            case 'red':
-                            case 'yellow':
-                            case 'blue':
-                                return <span className={obj.color}>{obj.name}</span>;
+                    let element = <span>{name}</span>;
 
-                            default:
-                                return <span style={{ color: obj.color }}>{obj.name}</span>;
-                        }
-                    } else {
-                        return obj.name;
+                    // 颜色
+                    if (color) {
+                        const definedColors = ['green', 'red', 'yellow', 'blue'];
+                        const className = definedColors.includes(color) ? color : '';
+                        const style = definedColors.includes(color) ? {} : { color };
+                        element = (
+                            <span className={className} style={style}>
+                                {name}
+                            </span>
+                        );
                     }
+
+                    // 悬浮
+                    if (explain) {
+                        element = <Tooltip title={explain}>{element}</Tooltip>;
+                    }
+
+                    return element;
                 } else if (typeof obj === 'string') {
                     // 如果是字符串
                     return obj;

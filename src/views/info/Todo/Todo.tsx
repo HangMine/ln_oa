@@ -6,6 +6,25 @@ import './Todo.scss';
 // 接口
 const url = 'info.todo.table';
 
+// 筛选框
+const tableFilters = [
+    {
+        key: 'order',
+        title: '排序规则',
+        type: 'select',
+        options: [
+            {
+                id: 'm_time',
+                name: '流程发起时间',
+            },
+            {
+                id: 'o_time',
+                name: '节点发起时间',
+            },
+        ],
+    },
+];
+
 // 主函数
 const Todo: FC = () => {
     const onRow = (recode: obj) => {
@@ -19,7 +38,7 @@ const Todo: FC = () => {
 
     return (
         <section className="todo">
-            <HTable url={url} onRow={onRow}></HTable>
+            <HTable url={url} filters={tableFilters} onRow={onRow}></HTable>
         </section>
     );
 };

@@ -153,12 +153,14 @@ const EditModel: FC<editModelProps & FormComponentProps> = ({
                             mode="multiple"
                             placeholder="请选择参与人"
                             style={{ width: 300 }}
-                            onChange={(value: string) => rowChange('uids', value, recode, index)}>
-                            {userList.map((option) => (
-                                <Option key={option.id} value={option.id}>
-                                    {option.name}
-                                </Option>
-                            ))}
+                            onChange={(value: string) => rowChange('uids', value, recode, index)}
+                            filterOption={(input, option: any) => option.props.children.includes(input)}>
+                            {userList &&
+                                userList.map((option) => (
+                                    <Option key={option.id} value={option.id}>
+                                        {option.name}
+                                    </Option>
+                                ))}
                         </Select>
                     )}
                 </Form.Item>
@@ -181,7 +183,8 @@ const EditModel: FC<editModelProps & FormComponentProps> = ({
                             mode="multiple"
                             placeholder="请选择参与角色"
                             style={{ width: 300 }}
-                            onChange={(value: string) => rowChange('role_ids', value, recode, index)}>
+                            onChange={(value: string) => rowChange('role_ids', value, recode, index)}
+                            filterOption={(input, option: any) => option.props.children.includes(input)}>
                             {roleList.map((option) => (
                                 <Option key={option.id} value={option.id}>
                                     {option.name}
@@ -353,7 +356,12 @@ const EditModel: FC<editModelProps & FormComponentProps> = ({
                         </Select>
                     )}
                 </Form.Item>
-                <Table columns={editColumns} dataSource={formData.flows} rowKey={(record, i) => `${i}`} />
+                <Table
+                    columns={editColumns}
+                    dataSource={formData.flows}
+                    pagination={false}
+                    rowKey={(record, i) => `${i}`}
+                />
             </Form>
         </Modal>
     );

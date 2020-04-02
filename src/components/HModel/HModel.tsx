@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useMemo } from 'react';
+import React, { FC, useState, useEffect, useMemo, ReactElement } from 'react';
 import { Button, Modal } from 'antd';
 import { useMappedState, useDispatch } from 'redux-react-hook';
 import { fetchTable } from '@/redux/actions';
@@ -10,10 +10,11 @@ import DragableModal from './DragableModal';
 import { LocationState } from 'history';
 type HMdeolProp = {
     filters: filters;
-    url: string;
+    url?: string;
     params?: LocationState;
     commitUrl: string;
     commitParams?: LocationState;
+    onCommited?: (res: res) => void;
     httpType?: string;
     data: {
         show: boolean;
@@ -27,6 +28,9 @@ type HMdeolProp = {
     rowKey?: string;
     title?: string;
     cols?: 1 | 2 | 3 | 4 | 6 | 8;
+    noReset?: Boolean;
+    front?: ReactElement;
+    end?: ReactElement;
     [any: string]: any;
 };
 
@@ -36,6 +40,7 @@ const HModel: FC<HMdeolProp> = ({
     params,
     commitUrl,
     commitParams,
+    onCommited,
     httpType,
     data,
     setData,
@@ -43,35 +48,41 @@ const HModel: FC<HMdeolProp> = ({
     rowKey,
     title,
     cols,
+    noReset,
+    front,
+    end,
     ...otherProps
 }) => {
     const dispatch = useDispatch();
     const filterParams = useMappedState((state) => state.filterParams);
     const [form, setform]: [any, any] = useCurrent({});
     const { getFieldDecorator, validateFields, resetFields, validateFieldsAndScroll } = form;
+    const [loading, setloading] = useState(false);
 
     const hasImmediate = useMemo(() => {
         return filters.some((filter) => filter.react && filter.react.immediate);
     }, [filters]);
 
-    useEffect(() => {
-        data.show && data.isEdit && handleImmdiateCallback(data.row);
-    }, []);
-
     // 监听打开时(加上editForm的监听是因为弹窗显示后editForm还没有设置好值)
     useEffect(() => {
         if (!Object.keys(form).length) return;
-        if (data.isEdit) {
-            setValues(data.row);
-        } else {
-            reset();
-        }
-        data.isEdit ? setValues(data.row) : reset();
+        // if (data.isEdit) {
+        //     setValues(data.row);
+        // } else {
+        //     reset();
+        // }
+        new Promise((resolve, reject) => {
+            handleImmdiateCallback(data.row);
+            resolve();
+        }).then(() => {
+            // 使用promise保证在handleImmdiateCallback后面设置值(可能延迟不够，会有警告)
+            data.isEdit ? setValues(data.row) : reset();
+        });
     }, [data, form]);
 
     // 重置
     const reset = () => {
-        if (!Object.keys(form).length || !filters) return;
+        if (!Object.keys(form).length || !filters || noReset) return;
         resetFields();
     };
 
@@ -88,6 +99,7 @@ const HModel: FC<HMdeolProp> = ({
     // 设置值
     const setValues = (row: obj) => {
         if (!Object.keys(form).length || !filters) return;
+
         const { setFieldsValue } = form;
         // 保留表单上的字段
         let resValues: obj = {};
@@ -141,11 +153,7 @@ const HModel: FC<HMdeolProp> = ({
                 return;
             }
 
-            setData({
-                ...data,
-                loading: true,
-            });
-
+            setloading(true);
             const _rowKey = rowKey || 'id';
             const _params = {
                 [_rowKey]: data.isEdit ? data.row[_rowKey] : '',
@@ -155,16 +163,14 @@ const HModel: FC<HMdeolProp> = ({
             const _http = httpType === 'post' ? http.post : http;
 
             _http(commitUrl, _params).then((res) => {
-                setData({
-                    ...data,
-                    loading: false,
-                });
+                setloading(false);
+                onCommited && onCommited(res);
                 if (res.code == 0) {
                     setData({
                         ...data,
                         show: false,
                     });
-                    dispatch(fetchTable(url, { ...params, ...filterParams }));
+                    url && dispatch(fetchTable(url, { ...params, ...filterParams }));
                 }
             });
         });
@@ -193,12 +199,14 @@ const HModel: FC<HMdeolProp> = ({
                     }>
                     取消
                 </Button>,
-                <Button key="commit" type="primary" loading={data.loading} onClick={_commit}>
+                <Button key="commit" type="primary" loading={loading} onClick={_commit}>
                     确定
                 </Button>,
             ]}
             {...otherProps}>
+            {front}
             <HFilter cols={cols} data={filters} onForm={(form: any) => setform(form)}></HFilter>
+            {end}
         </DragableModal>
     );
 };

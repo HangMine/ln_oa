@@ -1,6 +1,38 @@
+@page {
+  size: a4;
+}
+
 .print-table-wrap {
   text-align: center;
   color: black;
+
+  &.cost {
+    .print-table {
+      .check {
+        margin-right: 30px;
+      }
+    }
+  }
+
+  &.union {
+    .print-table {
+      tr {
+        line-height: 1.8;
+      }
+
+      .fat-tr {
+        line-height: 3;
+      }
+
+      .more-line-tr {
+        line-height: 1.2;
+      }
+
+
+    }
+
+  }
+
 
   .print-table {
     display: inline-block;
@@ -10,8 +42,26 @@
     border-right: none;
     font-size: 13px;
     text-align: center;
-    margin: 20px;
+    // margin: 80px;
     position: relative;
+
+    .table-ul {
+      margin: 0;
+
+      li {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-bottom: 1px solid gray;
+        line-height: 1.6;
+        padding-left: 10px;
+
+        &:last-child {
+          border-bottom: none;
+        }
+      }
+
+    }
 
     .table-logo {
       position: absolute;
@@ -52,11 +102,34 @@
       line-height: 3;
     }
 
+    .more-line-tr {
+      line-height: 1.2;
+    }
+
     th,
     td {
       border-bottom: 1px solid black;
       border-right: 1px solid black;
       padding: 0 10px
+    }
+
+    .td-ul {
+      margin: 5px 0;
+    }
+
+    // 勾选框
+    .square {
+      font-size: 15px;
+      vertical-align: -1px;
+      margin: 0 1px;
+    }
+
+    .check {
+      margin-right: 50px;
+    }
+
+    .check.right {
+      float: right;
     }
   }
 }

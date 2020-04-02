@@ -41,6 +41,7 @@ const FlowModel: FC<FlowModelProps> = ({ children, url, parmas, filters, data, s
         validateFields: signValidateFields,
         resetFields: resetSignFields,
         getFieldsValue: signGetFieldsValue,
+        validateFieldsAndScroll: signValidateFieldsAndScroll,
     } = signForm;
     // 获取合同审批单表单
     const [checkFilters, setcheckFilters, checkFiltersRef]: [filters, any, any] = useCurrent(filters);
@@ -183,8 +184,10 @@ const FlowModel: FC<FlowModelProps> = ({ children, url, parmas, filters, data, s
                 break;
             case 'turn_down':
             case 'restart':
+            case 'stamp':
                 setFLowsFilter().then((flowsFilter) => {
-                    setSignFilters([remarkFilter, flowsFilter]);
+                    const signFilters = flowsFilter.options.length ? [remarkFilter, flowsFilter] : [remarkFilter];
+                    setSignFilters(signFilters);
                 });
                 break;
             default:
@@ -312,7 +315,10 @@ const FlowModel: FC<FlowModelProps> = ({ children, url, parmas, filters, data, s
             // 获取签名参数
             let signValues = {};
             signValidateFields((err: any, values: any) => {
-                if (err) return;
+                if (err) {
+                    signValidateFieldsAndScroll();
+                    return;
+                }
                 signValues = values;
             });
             if (!Object.keys(signValues).length) return;

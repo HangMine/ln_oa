@@ -22,4 +22,19 @@
     vertical-align: middle;
   }
 
+  // checkbox支持变大
+  .big-check-box {
+    .ant-checkbox-inner {
+      width: 22px;
+      height: 22px;
+
+      &::after {
+        top: 47%;
+        left: 27%;
+        width: 7.714286px;
+        height: 12.142857px;
+      }
+    }
+  }
+
 }

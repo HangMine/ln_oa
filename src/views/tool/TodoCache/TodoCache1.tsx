@@ -81,6 +81,9 @@ const TodoCache: FC<propsType> = ({ db }) => {
         });
     };
 
+    const test =
+        '{"raw":{"url":"http:\\/\\/mcs.snssdk.com\\/v2\\/event\\/json","params":{"user":{"user_unique_id":"7279395522","build_serial ":"unknow","openudid":null},"header":{"app_package":"menghuanjianghu01"},"events":[{"event":"purchase","params":"{\\"currency\\":\\"rmb\\",\\"is_success\\":\\"yes\\",\\"currency_amount\\":6}"}]}},"ret":"{\\"e\\":0,\\"message\\":\\"success\\",\\"sc\\":1}","package":{"campaign_id":"5338578123","channel_id":"652","leniu_ip":"183.6.55.82","leniu_lnid":"868067032833907","leniu_imei":"868067032833907","leniu_idfa":"","leniu_idfv":"","leniu_md5_device":"c83e61cf5fa52cb17bf31fd13a695ec1","event_time":1575625776,"event_type":"4","unique":"is_test_1575625776","leniu_user_id":"7279395522","is_test":1,"weixin_username":"wengyonglin","is_no_need_click":1,"push_times":8,"params":{"order_id":"is_test_1575625776","money":600},"campaignConfig":{"id":"317630","data_type":"1","app":"55960","campaign_id":"5338578123","game_id":"40","device_platform_id":"2","package_id":"30592","channel_id":"366","tag_id":"0","callback_type":[],"package_version":"1.00","final_url":"","third_part_track_url":"","follow_uid":"0","discount":"0.0000","encrypt_key":"","sign_key":"","ext_config":null,"is_test":"2","state":"1","m_uid":"0","m_time":"0","callback":[],"sdk_channel_shortname":"toutiaotoufang","sdk_channel_id":"176","sdk_channel_name":"\\u4eca\\u65e5\\u5934\\u6761\\uff08\\u4e50\\u725b\\uff09","third_data_key":"","package_campaign":"5338578123","channel_name":"\\u53d1\\u884c\\u6e20\\u9053","match_policy":"1","click_valid_time":"86400","receive_param":[]},"info":[],"callback_log_auto_id":"14067"}}';
+
     return (
         <section className="todo-cache">
             <div className="filter">
@@ -129,7 +132,7 @@ const TodoCache: FC<propsType> = ({ db }) => {
                 {(res.code || res.code === 0) && (
                     <>{res.code == '0' ? <Tag color="green">{res.notice}</Tag> : <Tag color="red">{res.notice}</Tag>}</>
                 )}
-                <HightLight content={res.data} style={{ marginTop: '10px', height: '150px' }}></HightLight>
+                <HightLight content={test} style={{ marginTop: '10px', height: '150px' }}></HightLight>
             </div>
         </section>
     );

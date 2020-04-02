@@ -131,56 +131,100 @@ const Legal: FC = () => {
 
     // 当前选中的tab
     const [tab, settab] = useState('');
-    const startTimeFilter = {
-        key: 'start_date',
-        title: '开始时间',
-        type: 'date',
-    };
-    const endTimeFilter = [
-        {
-            key: 'end_date',
-            title: '终止时间',
-            type: 'date',
-        },
-        {
-            key: 'auto_renewal',
-            title: '是否自动续期',
-            type: 'input',
-        },
-        {
-            key: 'renewal',
-            title: '续期后终止日期',
-            type: 'input',
-        },
-    ];
-    const auditDateFilter = {
-        key: 'audit_date',
-        title: '发送律师审核时间',
-        type: 'date',
-    };
-    const feedbackDateFilter = {
-        key: 'feedback_date',
-        title: '律师反馈时间',
-        type: 'date',
-    };
-    const contractStatusFilter = {
-        key: 'contract_status',
-        title: '合同状态',
-        type: 'input',
-        // options: allOptions.contract_status,
-    };
-    const isAuditFilter = {
-        key: 'is_audit',
-        title: '是否发送律师审核',
-        type: 'select',
-        options: allOptions.is_audit,
-    };
-    const totalPriceFilter = {
-        key: 'total_price',
-        title: '合同总金额（元）',
-        type: 'input',
-    };
+
     useEffect(() => {
+        const dateFilters = [
+            {
+                key: 'time_type',
+                title: '时间类型',
+                type: 'radio',
+                options: [
+                    {
+                        id: '1',
+                        name: '时间框',
+                    },
+                    {
+                        id: '2',
+                        name: '输入框',
+                    },
+                ],
+                initValue: '1',
+                react: {
+                    callback(value: string, form: any) {
+                        const dateKeyss: (string | number)[] = ['start_date', 'end_date'];
+                        seteditFilters((editFilters) =>
+                            // 在seteditFilters里面使用form.setFieldsValue，会使控制台报警告，后续需解决
+                            editFilters.map((filter) => {
+                                if (dateKeyss.includes(filter.key)) {
+                                    if (value === '1') {
+                                        filter.type = 'date';
+                                        form.setFieldsValue({
+                                            [`${filter.key}`]: new Date(),
+                                        });
+                                    } else if (value === '2') {
+                                        filter.type = 'input';
+                                        form.setFieldsValue({
+                                            [`${filter.key}`]: '',
+                                        });
+                                    }
+                                }
+                                return filter;
+                            })
+                        );
+                    },
+                    immediate: true,
+                },
+            },
+            {
+                key: 'start_date',
+                title: '开始时间',
+                type: 'date',
+            },
+            {
+                key: 'end_date',
+                title: tab === 'WB' ? '最终交付时间' : '终止时间',
+                type: 'date',
+            },
+            {
+                key: 'auto_renewal',
+                title: '是否自动续期',
+                type: 'input',
+            },
+            {
+                key: 'renewal',
+                title: '续期后终止日期',
+                type: 'input',
+            },
+        ];
+
+        const auditDateFilter = {
+            key: 'audit_date',
+            title: '发送律师审核时间',
+            type: 'date',
+        };
+        const feedbackDateFilter = {
+            key: 'feedback_date',
+            title: '律师反馈时间',
+            type: 'date',
+        };
+        const contractStatusFilter = {
+            key: 'contract_status',
+            title: '合同状态',
+            type: 'input',
+            // options: allOptions.contract_status,
+        };
+        const isAuditFilter = {
+            key: 'is_audit',
+            title: '是否发送律师审核',
+            type: 'select',
+            options: allOptions.is_audit,
+        };
+        const totalPriceFilter = {
+            key: 'total_price',
+            title: '合同总金额（元）',
+            type: 'input',
+        };
+
         switch (tab) {
             case 'LY':
                 //联运类
@@ -227,8 +271,7 @@ const Legal: FC = () => {
                         title: '跟进人',
                         type: 'input',
                     },
-                    startTimeFilter,
-                    ...endTimeFilter,
+                    ...dateFilters,
                     contractStatusFilter,
                     {
                         key: 'note',
@@ -277,8 +320,7 @@ const Legal: FC = () => {
                         title: '游戏项目',
                         type: 'input',
                     },
-                    startTimeFilter,
-                    ...endTimeFilter,
+                    ...dateFilters,
                     contractStatusFilter,
                     {
                         key: 'note',
@@ -333,8 +375,7 @@ const Legal: FC = () => {
                         type: 'input',
                     },
                     totalPriceFilter,
-                    startTimeFilter,
-                    ...endTimeFilter,
+                    ...dateFilters,
 
                     contractStatusFilter,
                     {
@@ -389,12 +430,12 @@ const Legal: FC = () => {
                         title: '项目',
                         type: 'input',
                     },
-                    startTimeFilter,
-                    {
-                        key: 'end_date',
-                        title: '最终交付时间',
-                        type: 'input',
-                    },
+                    ...dateFilters,
+                    // {
+                    //     key: 'end_date',
+                    //     title: '最终交付时间',
+                    //     type: 'input',
+                    // },
                     totalPriceFilter,
                     contractStatusFilter,
                     {
@@ -455,8 +496,7 @@ const Legal: FC = () => {
                         type: 'input',
                     },
                     totalPriceFilter,
-                    startTimeFilter,
-                    ...endTimeFilter,
+                    ...dateFilters,
                     contractStatusFilter,
                     {
                         key: 'content',

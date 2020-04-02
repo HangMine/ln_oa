@@ -70,11 +70,11 @@ class App extends React.Component<any, any> {
                                 noMenu={true}
                                 component={lazy(() => import('@/views/index'))}></PrivateRoute>
                             <PrivateRoute
-                                path="/print/cost"
+                                path="/print/cost/:id"
                                 noMenu={true}
                                 component={lazy(() => import('@/views/print/Cost/Cost'))}></PrivateRoute>
                             <PrivateRoute
-                                path="/print/union"
+                                path="/print/union/:id"
                                 noMenu={true}
                                 component={lazy(() => import('@/views/print/Union/Union'))}></PrivateRoute>
                             <PrivateRoute

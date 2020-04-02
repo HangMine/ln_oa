@@ -32,424 +32,442 @@ const tableFilters = [
     },
 ];
 
-// 收入筛选框
-const incomeFilters = [
-    {
-        key: 'step_name',
-        title: '合同进度',
-        type: 'input',
-    },
-    {
-        key: 'company',
-        title: '签约主体',
-        type: 'input',
-    },
-    {
-        key: 'partners',
-        title: '合作方',
-        type: 'input',
-    },
-    {
-        key: 'channel',
-        title: '渠道',
-        type: 'input',
-    },
-    {
-        key: 'game_name',
-        title: '游戏名称',
-        type: 'input',
-    },
-    {
-        key: 'game_name2',
-        title: '游戏名称2',
-        type: 'input',
-    },
-
-    {
-        key: 'operate_date',
-        title: '操作时间',
-        type: 'input',
-    },
-    {
-        key: 'docking_date',
-        title: '开始对接时间',
-        type: 'input',
-    },
-
-    {
-        key: 'coop_type',
-        title: '合作类型',
-        type: 'input',
-    },
-    {
-        key: 'business_mode',
-        title: '业务模式',
-        type: 'input',
-    },
-    {
-        key: 'device_type',
-        title: '系统',
-        type: 'input',
-    },
-    {
-        key: 'nature',
-        title: '授权区域',
-        type: 'input',
-        // options: [
-        //     {
-        //         id: '是',
-        //         name: '是',
-        //     },
-        //     {
-        //         id: '否',
-        //         name: '否',
-        //     },
-        // ],
-    },
-    {
-        key: 'start_date',
-        title: '合同起始日期',
-        type: 'input',
-    },
-    {
-        key: 'end_date',
-        title: '合同终止日期',
-        type: 'input',
-    },
-    {
-        key: 'auto_renewal',
-        title: '是否自动续期',
-        type: 'input',
-    },
-    {
-        key: 'stop_date',
-        title: '续期后终止日期',
-        type: 'input',
-    },
-    {
-        key: 'is_online',
-        title: '游戏是否在线',
-        type: 'input',
-    },
-    {
-        key: 'special_division',
-        title: '特殊分成条款',
-        type: 'input',
-    },
-    {
-        key: 'ensure',
-        title: '保量条款',
-        type: 'input',
-    },
-    {
-        key: 'division',
-        title: '我方分成比例',
-        type: 'input',
-    },
-    {
-        key: 'channel_cost_rate',
-        title: '我方渠道费率',
-        type: 'input',
-    },
-    {
-        key: 'tax_rate',
-        title: '税率',
-        type: 'input',
-    },
-    {
-        key: 'rec_cycle',
-        title: '对账周期',
-        type: 'input',
-    },
-    {
-        key: 'rec_node',
-        title: '对账节点',
-        type: 'input',
-    },
-    {
-        key: 'pay_node',
-        title: '回款时间',
-        type: 'input',
-    },
-    {
-        key: 'min_pay',
-        title: '最低结算额度',
-        type: 'input',
-    },
-    {
-        key: 'accept_rate',
-        title: '可接受差异率',
-        type: 'input',
-    },
-    {
-        key: 'data_base',
-        title: '数据基数',
-        type: 'input',
-    },
-    {
-        key: 'diff_type',
-        title: '差异处理方式',
-        type: 'input',
-    },
-    {
-        key: 'server_cost',
-        title: '是否我方承担服务器成本	',
-        type: 'input',
-    },
-    {
-        key: 'bad_debt',
-        title: '坏账处理',
-        type: 'input',
-    },
-    {
-        key: 'number',
-        title: '合同编号',
-        type: 'input',
-    },
-
-    {
-        key: 'review_date',
-        title: '财务复核时间',
-        type: 'input',
-    },
-    {
-        key: 'recheck',
-        title: '是否需要再次审核',
-        type: 'input',
-    },
-    {
-        key: 'note',
-        title: '备注',
-        type: 'input',
-    },
-];
-
-// 代理筛选框
-const agentFilters = [
-    {
-        key: 'company',
-        title: '签约主体',
-        type: 'input',
-    },
-    {
-        key: 'partners',
-        title: '合作方',
-        type: 'input',
-    },
-    {
-        key: 'game_name',
-        title: '游戏名称',
-        type: 'input',
-    },
-    {
-        key: 'game_name2',
-        title: '游戏名称2',
-        type: 'input',
-    },
-
-    {
-        key: 'device_type',
-        title: '系统',
-        type: 'input',
-    },
-    {
-        key: 'start_date',
-        title: '合同起始日期',
-        type: 'input',
-    },
-    {
-        key: 'end_date',
-        title: '合同终止日期',
-        type: 'input',
-    },
-    {
-        key: 'auto_renewal',
-        title: '是否自动续期',
-        type: 'input',
-    },
-    {
-        key: 'special_division',
-        title: '特殊分成条款',
-        type: 'input',
-    },
-    {
-        key: 'division',
-        title: '合作方分成比例',
-        type: 'input',
-    },
-    {
-        key: 'channel_cost',
-        title: '是否我方承担渠道费',
-        type: 'input',
-    },
-    {
-        key: 'tax_rate',
-        title: '税率',
-        type: 'input',
-    },
-    {
-        key: 'rec_cycle',
-        title: '对账周期',
-        type: 'input',
-    },
-    {
-        key: 'rec_node',
-        title: '对账节点',
-        type: 'input',
-    },
-    {
-        key: 'pay_node',
-        title: '回款时间',
-        type: 'input',
-    },
-    {
-        key: 'min_pay',
-        title: '最低结算额度',
-        type: 'input',
-    },
-    {
-        key: 'accept_rate',
-        title: '可接受差异率',
-        type: 'input',
-    },
-    {
-        key: 'data_base',
-        title: '数据基数',
-        type: 'input',
-    },
-    {
-        key: 'diff_type',
-        title: '差异处理方式',
-        type: 'input',
-    },
-    {
-        key: 'server_cost',
-        title: '是否我方承担服务器成本	',
-        type: 'input',
-    },
-    {
-        key: 'bad_debt',
-        title: '坏账处理',
-        type: 'input',
-    },
-    {
-        key: 'number',
-        title: '合同编号',
-        type: 'input',
-    },
-    {
-        key: 'nature',
-        title: '性质',
-        type: 'input',
-    },
-    {
-        key: 'review_date',
-        title: '财务复核时间',
-        type: 'input',
-    },
-    {
-        key: 'recheck',
-        title: '是否需要再次审核',
-        type: 'input',
-    },
-    {
-        key: 'note',
-        title: '备注',
-        type: 'input',
-    },
-    {
-        key: 'partners_simple',
-        title: '合作方公司简称',
-        type: 'input',
-    },
-    {
-        key: 'renewal_date',
-        title: '续签日期',
-        type: 'input',
-    },
-];
-
-// 推广筛选框
-const spreadFilters = [
-    {
-        key: 'company',
-        title: '签约主体',
-        type: 'input',
-    },
-    {
-        key: 'channel',
-        title: '渠道',
-        type: 'input',
-    },
-    {
-        key: 'start_date',
-        title: '合同起始日期',
-        type: 'input',
-    },
-    {
-        key: 'end_date',
-        title: '合同终止日期',
-        type: 'input',
-    },
-    {
-        key: 'delivery',
-        title: '投放方式',
-        type: 'input',
-    },
-    {
-        key: 'total_price',
-        title: '合同总价',
-        type: 'input',
-    },
-    {
-        key: 'pay_type',
-        title: '付款方式',
-        type: 'input',
-    },
-    {
-        key: 'cycle',
-        title: '账期',
-        type: 'input',
-    },
-    {
-        key: 'return_rate',
-        title: '返点率',
-        type: 'input',
-    },
-    {
-        key: 'return_point',
-        title: '返点方式',
-        type: 'input',
-    },
-    {
-        key: 'invoice',
-        title: '发票内容',
-        type: 'input',
-    },
-    {
-        key: 'invoice_type',
-        title: '发票类型',
-        type: 'input',
-    },
-    {
-        key: 'invoice_tax_rate',
-        title: '发票税率',
-        type: 'input',
-    },
-    {
-        key: 'recheck',
-        title: '是否需要再次审核',
-        type: 'input',
-    },
-];
-
 // 主函数
 const Base: FC = () => {
+    // 合同时间框
+    const dateFilters = [
+        {
+            key: 'time_type',
+            title: '时间类型',
+            type: 'radio',
+            options: [
+                {
+                    id: '1',
+                    name: '时间框',
+                },
+                {
+                    id: '2',
+                    name: '输入框',
+                },
+            ],
+            initValue: '1',
+            react: {
+                callback(value: string, form: any) {
+                    const dateKeyss: (string | number)[] = ['start_date', 'end_date'];
+                    seteditFilters((editFilters) =>
+                        // 在seteditFilters里面使用form.setFieldsValue，会使控制台报警告，后续需解决
+                        editFilters.map((filter) => {
+                            if (dateKeyss.includes(filter.key)) {
+                                if (value === '1') {
+                                    filter.type = 'date';
+                                    form.setFieldsValue({
+                                        [`${filter.key}`]: new Date(),
+                                    });
+                                } else if (value === '2') {
+                                    filter.type = 'input';
+                                    form.setFieldsValue({
+                                        [`${filter.key}`]: '',
+                                    });
+                                }
+                            }
+                            return filter;
+                        })
+                    );
+                },
+                immediate: true,
+            },
+        },
+        {
+            key: 'start_date',
+            title: '合同起始日期',
+            type: 'date',
+        },
+        {
+            key: 'end_date',
+            title: '合同终止日期',
+            type: 'date',
+        },
+    ];
+
+    // 收入筛选框
+    const incomeFilters = [
+        {
+            key: 'step_name',
+            title: '合同进度',
+            type: 'input',
+        },
+        {
+            key: 'company',
+            title: '签约主体',
+            type: 'input',
+        },
+        {
+            key: 'partners',
+            title: '合作方',
+            type: 'input',
+        },
+        {
+            key: 'channel',
+            title: '渠道',
+            type: 'input',
+        },
+        {
+            key: 'game_name',
+            title: '游戏名称',
+            type: 'input',
+        },
+        {
+            key: 'game_name2',
+            title: '游戏名称2',
+            type: 'input',
+        },
+
+        {
+            key: 'operate_date',
+            title: '操作时间',
+            type: 'input',
+        },
+        {
+            key: 'docking_date',
+            title: '开始对接时间',
+            type: 'input',
+        },
+
+        {
+            key: 'coop_type',
+            title: '合作类型',
+            type: 'input',
+        },
+        {
+            key: 'business_mode',
+            title: '业务模式',
+            type: 'input',
+        },
+        {
+            key: 'device_type',
+            title: '系统',
+            type: 'input',
+        },
+        {
+            key: 'nature',
+            title: '授权区域',
+            type: 'input',
+        },
+        ...dateFilters,
+        {
+            key: 'auto_renewal',
+            title: '是否自动续期',
+            type: 'input',
+        },
+        {
+            key: 'stop_date',
+            title: '续期后终止日期',
+            type: 'input',
+        },
+        {
+            key: 'is_online',
+            title: '游戏是否在线',
+            type: 'input',
+        },
+        {
+            key: 'special_division',
+            title: '特殊分成条款',
+            type: 'input',
+        },
+        {
+            key: 'ensure',
+            title: '保量条款',
+            type: 'input',
+        },
+        {
+            key: 'division',
+            title: '我方分成比例',
+            type: 'input',
+        },
+        {
+            key: 'channel_cost_rate',
+            title: '我方渠道费率',
+            type: 'input',
+        },
+        {
+            key: 'tax_rate',
+            title: '税率',
+            type: 'input',
+        },
+        {
+            key: 'rec_cycle',
+            title: '对账周期',
+            type: 'input',
+        },
+        {
+            key: 'rec_node',
+            title: '对账节点',
+            type: 'input',
+        },
+        {
+            key: 'pay_node',
+            title: '回款时间',
+            type: 'input',
+        },
+        {
+            key: 'min_pay',
+            title: '最低结算额度',
+            type: 'input',
+        },
+        {
+            key: 'accept_rate',
+            title: '可接受差异率',
+            type: 'input',
+        },
+        {
+            key: 'data_base',
+            title: '数据基数',
+            type: 'input',
+        },
+        {
+            key: 'diff_type',
+            title: '差异处理方式',
+            type: 'input',
+        },
+        {
+            key: 'server_cost',
+            title: '是否我方承担服务器成本	',
+            type: 'input',
+        },
+        {
+            key: 'bad_debt',
+            title: '坏账处理',
+            type: 'input',
+        },
+        {
+            key: 'number',
+            title: '合同编号',
+            type: 'input',
+        },
+
+        {
+            key: 'review_date',
+            title: '财务复核时间',
+            type: 'input',
+        },
+        {
+            key: 'recheck',
+            title: '是否需要再次审核',
+            type: 'input',
+        },
+        {
+            key: 'note',
+            title: '备注',
+            type: 'input',
+        },
+    ];
+
+    // 代理筛选框
+    const agentFilters = [
+        {
+            key: 'company',
+            title: '签约主体',
+            type: 'input',
+        },
+        {
+            key: 'partners',
+            title: '合作方',
+            type: 'input',
+        },
+        {
+            key: 'game_name',
+            title: '游戏名称',
+            type: 'input',
+        },
+        {
+            key: 'game_name2',
+            title: '游戏名称2',
+            type: 'input',
+        },
+
+        {
+            key: 'device_type',
+            title: '系统',
+            type: 'input',
+        },
+        ...dateFilters,
+        {
+            key: 'auto_renewal',
+            title: '是否自动续期',
+            type: 'input',
+        },
+        {
+            key: 'special_division',
+            title: '特殊分成条款',
+            type: 'input',
+        },
+        {
+            key: 'division',
+            title: '合作方分成比例',
+            type: 'input',
+        },
+        {
+            key: 'channel_cost',
+            title: '是否我方承担渠道费',
+            type: 'input',
+        },
+        {
+            key: 'tax_rate',
+            title: '税率',
+            type: 'input',
+        },
+        {
+            key: 'rec_cycle',
+            title: '对账周期',
+            type: 'input',
+        },
+        {
+            key: 'rec_node',
+            title: '对账节点',
+            type: 'input',
+        },
+        {
+            key: 'pay_node',
+            title: '回款时间',
+            type: 'input',
+        },
+        {
+            key: 'min_pay',
+            title: '最低结算额度',
+            type: 'input',
+        },
+        {
+            key: 'accept_rate',
+            title: '可接受差异率',
+            type: 'input',
+        },
+        {
+            key: 'data_base',
+            title: '数据基数',
+            type: 'input',
+        },
+        {
+            key: 'diff_type',
+            title: '差异处理方式',
+            type: 'input',
+        },
+        {
+            key: 'server_cost',
+            title: '是否我方承担服务器成本	',
+            type: 'input',
+        },
+        {
+            key: 'bad_debt',
+            title: '坏账处理',
+            type: 'input',
+        },
+        {
+            key: 'number',
+            title: '合同编号',
+            type: 'input',
+        },
+        {
+            key: 'nature',
+            title: '性质',
+            type: 'input',
+        },
+        {
+            key: 'review_date',
+            title: '财务复核时间',
+            type: 'input',
+        },
+        {
+            key: 'recheck',
+            title: '是否需要再次审核',
+            type: 'input',
+        },
+        {
+            key: 'note',
+            title: '备注',
+            type: 'input',
+        },
+        {
+            key: 'partners_simple',
+            title: '合作方公司简称',
+            type: 'input',
+        },
+        {
+            key: 'renewal_date',
+            title: '续签日期',
+            type: 'input',
+        },
+    ];
+
+    // 推广筛选框
+    const spreadFilters = [
+        {
+            key: 'company',
+            title: '签约主体',
+            type: 'input',
+        },
+        {
+            key: 'channel',
+            title: '渠道',
+            type: 'input',
+        },
+        ...dateFilters,
+        {
+            key: 'delivery',
+            title: '投放方式',
+            type: 'input',
+        },
+        {
+            key: 'total_price',
+            title: '合同总价',
+            type: 'input',
+        },
+        {
+            key: 'pay_type',
+            title: '付款方式',
+            type: 'input',
+        },
+        {
+            key: 'cycle',
+            title: '账期',
+            type: 'input',
+        },
+        {
+            key: 'return_rate',
+            title: '返点率',
+            type: 'input',
+        },
+        {
+            key: 'return_point',
+            title: '返点方式',
+            type: 'input',
+        },
+        {
+            key: 'invoice',
+            title: '发票内容',
+            type: 'input',
+        },
+        {
+            key: 'invoice_type',
+            title: '发票类型',
+            type: 'input',
+        },
+        {
+            key: 'invoice_tax_rate',
+            title: '发票税率',
+            type: 'input',
+        },
+        {
+            key: 'recheck',
+            title: '是否需要再次审核',
+            type: 'input',
+        },
+    ];
+
     // 筛选框
     const [filters] = useFilters(tableFilters);
 
     // 新增编辑筛选框
-    const [editFilters, seteditFilters]: [filters, any] = useState([]);
+    const [editFilters, seteditFilters] = useState<filters>([]);
 
     // 当前选中的tab
     const [tab, settab] = useState('');
@@ -478,18 +496,28 @@ const Base: FC = () => {
     useEffect(() => {
         if (!cols.length || !tab) return;
         let newEditFilters: filters = [];
+        const filterFn = (item: filterItem) => {
+            switch (item.key) {
+                // 时间类型需要特殊处理，不需要出现在表格上
+                case 'time_type':
+                    return cols.includes('start_date') && cols.includes('end_date');
+
+                default:
+                    return cols.includes(item.key);
+            }
+        };
         switch (tab) {
             case '6':
             case '7':
             case '9':
             case '24':
-                newEditFilters = incomeFilters.filter((item) => cols.includes(item.key));
+                newEditFilters = incomeFilters.filter(filterFn);
                 break;
             case '5':
-                newEditFilters = agentFilters.filter((item) => cols.includes(item.key));
+                newEditFilters = agentFilters.filter(filterFn);
                 break;
             case '4':
-                newEditFilters = spreadFilters.filter((item) => cols.includes(item.key));
+                newEditFilters = spreadFilters.filter(filterFn);
                 break;
 
             default:

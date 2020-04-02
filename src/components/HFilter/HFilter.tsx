@@ -1,16 +1,31 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { useDispatch, useMappedState } from 'redux-react-hook';
-import { Input, Form, Button, Select, Radio, DatePicker, Upload, Icon, message, AutoComplete, Row, Col } from 'antd';
+import {
+    Input,
+    Form,
+    Button,
+    Select,
+    Radio,
+    Checkbox,
+    DatePicker,
+    Upload,
+    Icon,
+    message,
+    AutoComplete,
+    Row,
+    Col,
+} from 'antd';
 import { FormComponentProps } from 'antd/es/form';
 import './HFilter.scss';
 import http, { params2query, getUrl } from '@/assets/js/http';
 import moment from 'moment';
-import { timeFormat, arr2d } from '@/assets/js/common';
+import { timeFormat, handleCheckbox, arr2d } from '@/assets/js/common';
 import axios from 'axios';
 import { isNumber, numClear } from '@/assets/js/check';
 
 const { TextArea } = Input;
 const { Option } = Select;
+const CheckboxGroup = Checkbox.Group;
 const { MonthPicker, RangePicker, WeekPicker } = DatePicker;
 
 // 根据类型返回单个表单
@@ -52,7 +67,7 @@ const getFormItem = (item: filterItem, c_data: filters, setc_data: any, form: an
             );
         case 'radio':
             return (
-                <Radio.Group onChange={(value) => onChange(value, item, c_data, setc_data, form)} {...item.props}>
+                <Radio.Group onChange={(e) => onChange(e.target.value, item, c_data, setc_data, form)} {...item.props}>
                     {item.options &&
                         item.options.map((option) => (
                             <Radio key={getOption(option, 'key')} value={getOption(option, 'key')} {...option.props}>
@@ -61,6 +76,35 @@ const getFormItem = (item: filterItem, c_data: filters, setc_data: any, form: an
                         ))}
                 </Radio.Group>
             );
+        case 'checkbox':
+            const checkboxOptions = item.options || [];
+            const checkOnchange = (e: any) => {
+                let value;
+                if (e.target.checked) {
+                    value = item.trueValue !== undefined ? item.trueValue : true;
+                } else {
+                    value = item.falseValue !== undefined ? item.falseValue : false;
+                }
+                onChange(value, item, c_data, setc_data, form);
+            };
+            if (checkboxOptions.length < 2) {
+                return (
+                    <Checkbox onChange={checkOnchange} {...item.props}>
+                        {getOption(checkboxOptions[0], 'title')}
+                    </Checkbox>
+                );
+            } else {
+                return (
+                    <Checkbox.Group
+                        options={checkboxOptions.map((option) => ({
+                            value: getOption(option, 'key'),
+                            label: getOption(option, 'title'),
+                        }))}
+                        onChange={(value) => onChange(value, item, c_data, setc_data, form)}
+                    />
+                );
+            }
+
         case 'date':
             return <DatePicker placeholder={getPlaceholder(item, '请选择日期')} allowClear {...item.props} />;
         case 'range':
@@ -352,6 +396,7 @@ const HFilter: React.FC<HFilter & FormComponentProps> = ({
     const currentSearch = () => {
         const values = getFieldsValue();
         timeFormat(c_data || [], values);
+        handleCheckbox(c_data, values);
         onSearch && onSearch({ ...params, ...values });
     };
 
@@ -364,6 +409,8 @@ const HFilter: React.FC<HFilter & FormComponentProps> = ({
                 return item.initValue ? moment(item.initValue) : moment(new Date());
             case 'upload':
                 return item.initValue || [];
+            case 'checkbox':
+                return item.initValue || (item.options && item.options.length > 1 ? [] : false);
             default:
                 return item.initValue || '';
         }
@@ -404,6 +451,8 @@ const HFilter: React.FC<HFilter & FormComponentProps> = ({
         switch (item.type) {
             case 'upload':
                 return 'fileList';
+            case 'checkbox':
+                return item.options && item.options.length > 1 ? 'value' : 'checked';
             default:
                 return 'value';
         }

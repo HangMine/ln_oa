@@ -95,8 +95,44 @@ const timeFormat = (filters: filters, values: obj) => {
 const handleUpload = (filters: filters, values: obj) => {
     for (const [key, item] of Object.entries(values)) {
         const filter = filters.find((item) => item.key === key)!;
-        if (filter.type === 'upload') {
-            values[key] = item.map((_item: obj) => _item.url);
+        switch (filter.type) {
+            case 'upload':
+                values[key] = item.map((_item: obj) => _item.url);
+                break;
+            case 'checkbox':
+                values[key] = getCheckboxValue(item, filter);
+                break;
+            default:
+                break;
+        }
+    }
+    return values;
+};
+
+// 处理checkbox
+const getCheckboxValue = (value: boolean, filter: filterItem) => {
+    const { trueValue, falseValue, options } = filter;
+    if (options && options.length > 1) {
+        return value;
+    } else {
+        let newValue;
+        if (value) {
+            newValue = trueValue !== undefined ? trueValue : true;
+        } else {
+            newValue = falseValue !== undefined ? falseValue : false;
+        }
+        return newValue;
+    }
+};
+const handleCheckbox = (filters: filters, values: obj) => {
+    for (const [key, item] of Object.entries(values)) {
+        const filter = filters.find((item) => item.key === key)!;
+        switch (filter.type) {
+            case 'checkbox':
+                values[key] = getCheckboxValue(item, filter);
+                break;
+            default:
+                break;
         }
     }
     return values;
@@ -185,4 +221,17 @@ const arr2d = (arr: any[], num: number) => {
     return resArr;
 };
 
-export { cache, cookie, firstUpperCase, pick, formatMap, timeFormat, handleUpload, to, num2cn, copy, arr2d };
+export {
+    cache,
+    cookie,
+    firstUpperCase,
+    pick,
+    formatMap,
+    timeFormat,
+    handleUpload,
+    handleCheckbox,
+    to,
+    num2cn,
+    copy,
+    arr2d,
+};
