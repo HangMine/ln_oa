@@ -1,6 +1,6 @@
 import React, { FC, useState, useEffect } from 'react';
 import '../common.scss';
-import 'paper-css/paper.min.css';
+// import 'paper-css/paper.min.css';
 import { history } from '@/router';
 import { to } from '@/assets/js/common';
 import http from '@/assets/js/http';
@@ -62,39 +62,9 @@ const Union: FC = () => {
                     </tr>
 
                     <tr>
-                        <td>合同类型</td>
+                        <td>签约主体</td>
                         <td className="left" colSpan={5}>
-                            <span>
-                                <span className="square">□</span>联运
-                            </span>
-                            <span className="table-check-box-wrap">
-                                <span className="square">□</span>联运
-                            </span>
-                            <span className="table-check-box-wrap">
-                                <span className="square">□</span>独代
-                            </span>
-                            <span className="table-check-box-wrap">
-                                <span className="square">□</span>其他：
-                            </span>
-                        </td>
-                    </tr>
-
-                    <tr>
-                        <td>合同名称</td>
-                        <td className="left" colSpan={5}>
-                            {formData.title}
-                        </td>
-                    </tr>
-
-                    <tr>
-                        <td>合同内容</td>
-                        <td className="left" colSpan={5}></td>
-                    </tr>
-
-                    <tr>
-                        <td>签约方</td>
-                        <td className="left" colSpan={5}>
-                            {formData.contract_party}
+                            {formData.company_name}
                         </td>
                     </tr>
 
@@ -113,6 +83,109 @@ const Union: FC = () => {
                         </td>
                     </tr>
 
+                    <tr>
+                        <td>合同类型</td>
+                        <td className="left" colSpan={5}>
+                            <span>
+                                <span className="square">□</span>联运
+                            </span>
+                            <span className="table-check-box-wrap">
+                                <span className="square">□</span>外放
+                            </span>
+                            <span className="table-check-box-wrap">
+                                <span className="square">□</span>投放
+                            </span>
+                            <span className="table-check-box-wrap">
+                                <span className="square">□</span>公会
+                            </span>
+                            <span className="table-check-box-wrap">
+                                <span className="square">□</span>代理
+                            </span>
+                            <span className="table-check-box-wrap">
+                                <span className="square">□</span>其他：
+                            </span>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>合同名称</td>
+                        <td className="left" colSpan={5}>
+                            {formData.title}
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>签约方</td>
+                        <td className="left" colSpan={5}>
+                            {formData.contract_party}
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>合作游戏</td>
+                        <td className="left" colSpan={5}>
+                            {(Array.isArray(formData.game_name) &&
+                                formData.game_name.map((item) => item.game_name).join('、')) ||
+                                ''}
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td style={{ padding: 0 }}>合同有效期限</td>
+                        <td className="left" colSpan={5}>
+                            {formData.start_date} 至 {formData.end_date}
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>渠道/版本</td>
+                        <td>
+                            <small>当月游戏用户实际充值总额</small>
+                        </td>
+                        <td colSpan={2}>甲方分成比例</td>
+                        <td colSpan={2}>乙方分成比例</td>
+                    </tr>
+
+                    <tr className="empty-tr">
+                        <td></td>
+                        <td></td>
+                        <td colSpan={2}></td>
+                        <td colSpan={2}></td>
+                    </tr>
+
+                    <tr className="empty-tr">
+                        <td></td>
+                        <td></td>
+                        <td colSpan={2}></td>
+                        <td colSpan={2}></td>
+                    </tr>
+
+                    <tr className="empty-tr">
+                        <td></td>
+                        <td></td>
+                        <td colSpan={2}></td>
+                        <td colSpan={2}></td>
+                    </tr>
+
+                    <tr className="empty-tr">
+                        <td></td>
+                        <td></td>
+                        <td colSpan={2}></td>
+                        <td colSpan={2}></td>
+                    </tr>
+
+                    <tr className="empty-tr">
+                        <td></td>
+                        <td></td>
+                        <td colSpan={2}></td>
+                        <td colSpan={2}></td>
+                    </tr>
+
+                    <tr className="double-tr">
+                        <td style={{ padding: 0 }}>是否有特殊要求</td>
+                        <td className="left" colSpan={5}></td>
+                    </tr>
+
                     <tr className="fat-tr">
                         <td colSpan={6} className="bold">
                             经办部门审核意见
@@ -120,14 +193,13 @@ const Union: FC = () => {
                     </tr>
 
                     <tr>
-                        <td style={{ lineHeight: 1.5 }}>
-                            <div>公司综合</div>
-                            <div>实力审查</div>
+                        <td style={{ lineHeight: 1.5, padding: 0 }}>
+                            <div>对方资质审查</div>
                         </td>
                         <td className="left" style={{ padding: 0 }} colSpan={5}>
                             <ul className="table-ul">
                                 <li>
-                                    1. 是否已通过平台合作调查表的调查
+                                    1. 是否已经合作方资质审批
                                     <span className="check">
                                         是<span className="square">□</span> 否<span className="square">□</span>
                                     </span>
@@ -142,120 +214,8 @@ const Union: FC = () => {
                         </td>
                     </tr>
 
-                    <tr>
-                        <td style={{ lineHeight: 1.5 }}>
-                            <div>运营团队</div>
-                            <div>实力审查</div>
-                        </td>
-                        <td className="left" style={{ padding: 0 }} colSpan={5}>
-                            <ul className="table-ul">
-                                <li>
-                                    1. 是否有运营捷游其他游戏产品的经验
-                                    <span className="check">
-                                        是<span className="square">□</span> 否<span className="square">□</span>
-                                    </span>
-                                </li>
-                                <li style={{ lineHeight: 2, paddingLeft: '10px' }}>
-                                    2. 是否有运营市面上主要热门游戏的经验
-                                    <span className="check">
-                                        是<span className="square">□</span> 否<span className="square">□</span>
-                                    </span>
-                                </li>
-                            </ul>
-                        </td>
-                    </tr>
-
-                    <tr>
-                        <td style={{ lineHeight: 1.5 }}>
-                            <div>公司综合</div>
-                            <div>实力审查</div>
-                        </td>
-                        <td className="left" style={{ padding: 0 }} colSpan={5}>
-                            <ul className="table-ul">
-                                <li>
-                                    1. 是否已取得对方营业执照副本复印件
-                                    <span className="check">
-                                        是<span className="square">□</span> 否<span className="square">□</span>
-                                    </span>
-                                </li>
-                                <li>
-                                    2. 是否已取得对方网络文化经营许可证复印件
-                                    <span className="check">
-                                        是<span className="square">□</span> 否<span className="square">□</span>
-                                    </span>
-                                </li>
-                                <li>
-                                    3. 是否已取得对方ICP证复印件
-                                    <span className="check">
-                                        是<span className="square">□</span> 否<span className="square">□</span>
-                                    </span>
-                                </li>
-                                <li>
-                                    4. 是否已取得对方税务登记证复印件
-                                    <span className="check">
-                                        是<span className="square">□</span> 否<span className="square">□</span>
-                                    </span>
-                                </li>
-                                <li>
-                                    5. 是否已取得对方组织结构代码证复印件
-                                    <span className="check">
-                                        是<span className="square">□</span> 否<span className="square">□</span>
-                                    </span>
-                                </li>
-                                <li style={{ lineHeight: 2, paddingLeft: '10px' }}>
-                                    6. 是否已取得对方国际域名注册证书复印件
-                                    <span className="check">
-                                        是<span className="square">□</span> 否<span className="square">□</span>
-                                    </span>
-                                </li>
-                            </ul>
-                        </td>
-                    </tr>
-
-                    <tr className="more-line-tr">
-                        <td>合同有效期限</td>
-                        <td className="left" colSpan={5}>
-                            {formData.start_date} 至 {formData.end_date}
-                        </td>
-                    </tr>
-
-                    <tr>
-                        <td>序号</td>
-                        <td>当月运营收入</td>
-                        <td colSpan={2}>甲方分成比例</td>
-                        <td colSpan={2}>乙方分成比例</td>
-                    </tr>
-
-                    <tr>
-                        <td>1</td>
-                        <td></td>
-                        <td colSpan={2}></td>
-                        <td colSpan={2}></td>
-                    </tr>
-
-                    <tr>
-                        <td>2</td>
-                        <td></td>
-                        <td colSpan={2}></td>
-                        <td colSpan={2}></td>
-                    </tr>
-
-                    <tr>
-                        <td>3</td>
-                        <td></td>
-                        <td colSpan={2}></td>
-                        <td colSpan={2}></td>
-                    </tr>
-
-                    <tr>
-                        <td className="bold">其他意见</td>
-                        <td colSpan={5}>
-                            <span style={{ float: 'right', marginRight: '100px' }}>
-                                <span style={{ marginRight: '95px' }}>审核人：</span>
-                                <span className="date-block"></span>年<span className="date-block"></span>月
-                                <span className="date-block"></span>日
-                            </span>
-                        </td>
+                    <tr className="fat-tr left bold ">
+                        <td colSpan={6}>审核人:</td>
                     </tr>
 
                     <tr className="fat-tr">
@@ -264,64 +224,29 @@ const Union: FC = () => {
                         </td>
                     </tr>
 
-                    <tr>
-                        <td>1</td>
-                        <td colSpan={5} className="left" style={{ padding: 0, paddingLeft: '10px' }}>
-                            已对经办部门审核内容进行复核
-                            <span className="check right">
-                                是<span className="square">□</span> 否<span className="square">□</span>
-                            </span>
-                        </td>
+                    <tr className="left ">
+                        <td colSpan={6}>已对经办部门审核内容、主体资格、合同形式、合同内容的合法性进行复核。</td>
                     </tr>
 
-                    <tr>
-                        <td>2</td>
-                        <td colSpan={5} className="left" style={{ padding: 0 }}>
-                            <ul className="table-ul">
-                                <li>
-                                    主体资格所需文件是否齐备
-                                    <span className="check">
-                                        是<span className="square">□</span> 否<span className="square">□</span>
-                                    </span>
-                                </li>
-                                <li>
-                                    合同形式是否合法
-                                    <span className="check">
-                                        是<span className="square">□</span> 否<span className="square">□</span>
-                                    </span>
-                                </li>
-                                <li>
-                                    合同内容是否合法
-                                    <span className="check">
-                                        是<span className="square">□</span> 否<span className="square">□</span>
-                                    </span>
-                                </li>
-                                <li style={{ lineHeight: 2, paddingLeft: '10px' }}>其他意见</li>
-                            </ul>
-                        </td>
+                    <tr className="fat-tr left bold">
+                        <td colSpan={6}>审核人:</td>
                     </tr>
 
                     <tr className="fat-tr">
                         <td colSpan={6} className="bold">
-                            财务部审核意见
+                            财务审核意见
                         </td>
                     </tr>
 
-                    <tr>
-                        <td>1</td>
-                        <td colSpan={5} className="left">
-                            已进行了财务预算、履行程序、分成比例、结算条件、票据等财务方面的审核。
-                        </td>
+                    <tr className="left">
+                        <td colSpan={6}>已进行了财务预算、履行程序、分成比例、结算条件、票据等财务方面的审核。</td>
                     </tr>
 
-                    <tr>
-                        <td>2</td>
-                        <td colSpan={5} className="left">
-                            其他意见
-                        </td>
+                    <tr className="fat-tr left bold">
+                        <td colSpan={6}>审核人:</td>
                     </tr>
 
-                    <tr className="left bold">
+                    <tr className="left bold double-tr">
                         <td colSpan={6}>总经理审批:</td>
                     </tr>
                 </tbody>

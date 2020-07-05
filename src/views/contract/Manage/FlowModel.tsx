@@ -190,6 +190,12 @@ const FlowModel: FC<FlowModelProps> = ({ children, url, parmas, filters, data, s
                     setSignFilters(signFilters);
                 });
                 break;
+            // 双方已盖章，非必填
+            case 'allstamp':
+                let archiveRemarkFilter = { ...remarkFilter };
+                delete archiveRemarkFilter.rules;
+                setSignFilters([archiveRemarkFilter]);
+                break;
             default:
                 setSignFilters([remarkFilter]);
                 break;
@@ -416,7 +422,7 @@ const FlowModel: FC<FlowModelProps> = ({ children, url, parmas, filters, data, s
     const CheckFilterElement = useMemo(
         () => (
             <Card title="合同审批单" bordered={false}>
-                <HFilter data={checkFilters} onForm={(form: any) => setform(form)}></HFilter>
+                <HFilter data={checkFilters} row={data.row} onForm={(form: any) => setform(form)}></HFilter>
             </Card>
         ),
         [checkFilters]

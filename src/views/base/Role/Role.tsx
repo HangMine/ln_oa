@@ -274,7 +274,7 @@ const User: FC = () => {
     const btns = (
         <>
             <Button type="primary" icon="plus" onClick={add}>
-                新建
+                新增
             </Button>
             <Button type="primary" icon="edit" onClick={moreAccess}>
                 批量设置权限

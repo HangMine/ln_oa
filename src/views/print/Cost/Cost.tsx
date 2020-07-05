@@ -1,6 +1,6 @@
 import React, { FC, useState, useEffect } from 'react';
 import '../common.scss';
-import 'paper-css/paper.min.css';
+// import 'paper-css/paper.min.css';
 import { history } from '@/router';
 import { to } from '@/assets/js/common';
 import http from '@/assets/js/http';

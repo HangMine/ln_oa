@@ -1,4 +1,4 @@
-import React, { FC, useState, useEffect } from 'react';
+import React, { FC, useState, useEffect, useMemo } from 'react';
 import HTable from '@/components/HTable/HTable';
 import { Button } from 'antd';
 import HModel from '@/components/HModel/HModel';
@@ -23,6 +23,8 @@ const Legal: FC = () => {
     const [allOptions, setallOptions]: [obj, any] = useState({});
     // 搜索键列表
     const [keys, setkeys] = useState([]);
+    // 模版列表
+    const [templateList, settemplateList] = useState([]);
     // 接口列表
     useEffect(() => {
         // 搜索键列表
@@ -37,10 +39,19 @@ const Legal: FC = () => {
         http('contract.legal.options').then((res) => {
             setallOptions(res.data || {});
         });
+        // 模版列表
+        http('pub.tempalte', { category: 1 }).then((res) => {
+            settemplateList(res.data || []);
+        });
     }, []);
 
     // 筛选框
     const tableFilters = [
+        {
+            key: 'number',
+            title: '合同编号',
+            type: 'input',
+        },
         {
             key: 'key',
             title: '搜索键',
@@ -64,6 +75,17 @@ const Legal: FC = () => {
     ];
 
     // 新增编辑筛选框
+    const addFilters = useMemo(
+        () => [
+            {
+                key: 'template_id',
+                title: '合同模板',
+                type: 'select',
+                options: templateList,
+            },
+        ],
+        [templateList]
+    );
     const [editFilters, seteditFilters] = useState<filters>([]);
 
     // 前端对表单进行二次处理
@@ -532,10 +554,29 @@ const Legal: FC = () => {
         row: {},
     });
 
+    // 新增
+    const add = () => {
+        seteditFilters((editFilters) => {
+            let resultAddFilters = editFilters;
+            if (!editFilters.some((item) => item.key === 'template_id')) {
+                resultAddFilters = [...addFilters, ...editFilters];
+            }
+            return handleFilters(resultAddFilters, {});
+        });
+
+        seteditData({
+            ...editData,
+            show: true,
+            isEdit: false,
+            row: {},
+        });
+    };
+
     // 编辑
     const edit = (row: obj) => {
         seteditFilters((editFilters) => {
-            return handleFilters(editFilters, row);
+            const resultEditFilters = editFilters.filter((item) => item.key !== 'template_id');
+            return handleFilters(resultEditFilters, row);
         });
 
         seteditData({
@@ -545,6 +586,15 @@ const Legal: FC = () => {
             row: row,
         });
     };
+
+    // 按钮
+    const btns = (
+        <>
+            <Button type="primary" icon="plus" onClick={add}>
+                新增
+            </Button>
+        </>
+    );
 
     // 自定义的列
     const columns = [
@@ -604,6 +654,7 @@ const Legal: FC = () => {
                 menu
                 out
                 tableHeader
+                btns={btns}
                 onTab={(tab) => settab(tab)}
                 columns={columns}
                 filters={tableFilters}></HTable>

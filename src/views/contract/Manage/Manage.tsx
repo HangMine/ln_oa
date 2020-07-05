@@ -1,5 +1,5 @@
 import React, { FC, useState, useEffect, useMemo, useCallback, useRef } from 'react';
-import http from '@/assets/js/http';
+import http, { getUrl, params2query } from '@/assets/js/http';
 import HTable from '@/components/HTable/HTable';
 import { Button, Menu, Dropdown, Icon, message } from 'antd';
 import useFilters from '@/components/HTable/useFilters';
@@ -17,20 +17,12 @@ import { useCurrent } from '@/components/use/useCurrent';
 import { fetchTable } from '@/redux/actions';
 import HModel from '@/components/HModel/HModel';
 import SelectedTags from '@/components/MoreHandle/SelectedTags';
+import moment from 'moment';
 // 接口
 const url = 'contract.manage.table';
 
 // 批量操作接口
 const moreHandleUrl = 'contract.manage.moreHandle';
-
-// 批量操作筛选框
-const moreHandleFilters = [
-    {
-        key: 'remark',
-        title: '审核信息',
-        type: 'textarea',
-    },
-];
 
 // 额外输入框转换
 const getExtFilters = (apiData = [], values: obj = {}) => {
@@ -142,6 +134,10 @@ const Manage: FC = () => {
             title: '全局当前节点',
             type: 'select',
             optionsUrl: 'contract.manage.step',
+            props: {
+                mode: 'multiple',
+                style: { width: 250 },
+            },
         },
         {
             key: 'un_treat',
@@ -313,7 +309,7 @@ const Manage: FC = () => {
                                     if (value === '1') {
                                         filter.type = 'date';
                                         form.setFieldsValue({
-                                            [`${filter.key}`]: new Date(),
+                                            [`${filter.key}`]: moment(new Date()),
                                         });
                                     } else if (value === '2') {
                                         filter.type = 'input';
@@ -742,10 +738,22 @@ const Manage: FC = () => {
     );
 
     // 批量操作
+    const defaultMoreHandleFilters = [
+        {
+            key: 'remark',
+            title: '审核信息',
+            type: 'textarea',
+        },
+    ];
+    const [moreHandleFilters, setmoreHandleFilters] = useState<filters>(defaultMoreHandleFilters);
+
     const moreHandleMap: obj = useMemo(
         () => ({
             stamp: '盖章',
             archive: '归档',
+            check: '审核',
+            down: '下载',
+            allstamp: '双方已盖章',
         }),
         []
     );
@@ -770,19 +778,57 @@ const Manage: FC = () => {
                 message.error('请先勾选记录');
                 return;
             }
-            const params = {
-                id: selectedRows.map((item) => item.id),
-                action: e.key,
-            };
-            setmoreHandleParams(params);
+            let params;
 
-            setMoreHandleData({
-                ...moreHandleData,
-                title: moreHandleMap[e.key],
-                show: true,
-            });
+            switch (e.key) {
+                case 'down':
+                    const baseUrl = getUrl('contract.manage.moreDown');
+                    params = {
+                        id: selectedRows.map((item) => item.id).join(),
+                    };
+                    window.open(params2query(baseUrl, params));
+                    break;
+
+                default:
+                    if (e.key === 'stamp') {
+                        const stampMoreHandleFilters = [
+                            ...defaultMoreHandleFilters,
+                            {
+                                key: 'return_step',
+                                title: '返回步骤',
+                                type: 'radio',
+                                options: [
+                                    {
+                                        key: '1',
+                                        title: '我方已盖章，待对方盖章',
+                                    },
+                                    {
+                                        key: '2',
+                                        title: '对方已盖章，待我方盖章',
+                                    },
+                                ],
+                                initValue: '1',
+                            },
+                        ];
+                        setmoreHandleFilters(stampMoreHandleFilters);
+                    } else {
+                        setmoreHandleFilters(defaultMoreHandleFilters);
+                    }
+                    params = {
+                        id: selectedRows.map((item) => item.id),
+                        action: e.key,
+                    };
+                    setmoreHandleParams(params);
+
+                    setMoreHandleData({
+                        ...moreHandleData,
+                        title: moreHandleMap[e.key],
+                        show: true,
+                    });
+                    break;
+            }
         },
-        [selectedRows]
+        [selectedRows, moreHandleFilters]
     );
 
     // 续签
@@ -831,6 +877,48 @@ const Manage: FC = () => {
         [renewalData]
     );
 
+    // 修改合同编号
+    const numberUrl = 'contract.manage.number';
+    const numberParams = useMemo(() => ({ number: selectedRows.length && selectedRows[0].number }), [selectedRows]);
+    const selectedNumberEl = useMemo(
+        () => (
+            <SelectedTags tip="原合同编号:" tags={selectedRows.slice(0, 1).map((item) => item.number)}></SelectedTags>
+        ),
+        [selectedRows]
+    );
+    const _numberFilters = useMemo(
+        () => [
+            {
+                key: 'new_number',
+                title: '合同编号',
+            },
+        ],
+        []
+    );
+
+    // 合同编号表单
+    const [numberFilters, setnumberFilters] = useState<filters>(_numberFilters);
+
+    // 合同编号编辑数据
+    const [numberData, setNumberData] = useState<any>({
+        show: false,
+        isEdit: false,
+        row: {},
+    });
+
+    // 打开合同编号
+    const openNumber = useCallback(() => {
+        if (!selectedRows.length) {
+            message.error('请先勾选记录');
+            return;
+        }
+        setNumberData({
+            show: true,
+            isEdit: true,
+            row: selectedRows[0],
+        });
+    }, [selectedRows]);
+
     // 按钮
     const btns = (
         <>
@@ -849,12 +937,33 @@ const Manage: FC = () => {
                     批量操作 <Icon type="down" />
                 </Button>
             </Dropdown>
+            <Button icon="edit" onClick={() => openNumber()}>
+                修改合同编号
+            </Button>
         </>
     );
 
     // 自定义的列
     const columns = useMemo(
         () => [
+            {
+                dataIndex: 'game_name',
+                merge: true,
+                width: 150,
+                render: (value: any, recode: obj, index: number) => {
+                    if (Array.isArray(value)) {
+                        return (
+                            <ul>
+                                {value.map((item, i) => (
+                                    <li key={i}>{item.game_name}</li>
+                                ))}
+                            </ul>
+                        );
+                    } else {
+                        return value;
+                    }
+                },
+            },
             {
                 title: '操作',
                 dataIndex: 'tool',
@@ -868,6 +977,7 @@ const Manage: FC = () => {
         <section className="contract-manage">
             <HTable
                 url={url}
+                out
                 tableHeader
                 columns={columns}
                 params={routeParams}
@@ -902,6 +1012,16 @@ const Manage: FC = () => {
                 commitUrl={renewalUrl}
                 data={renewalData}
                 setData={setrenewalData}></HModel>
+            {/* 修改合同编号框 */}
+            <HModel
+                front={selectedNumberEl}
+                httpType="post"
+                filters={numberFilters}
+                url={url}
+                commitUrl={numberUrl}
+                commitParams={numberParams}
+                data={numberData}
+                setData={setNumberData}></HModel>
         </section>
     );
 };

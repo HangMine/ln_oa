@@ -133,10 +133,14 @@ const contract = {
         checkFormData: '/oa/contract/getApprovalForm',
         // 批量操作
         moreHandle: '/oa/contract/batchOperate',
+        // 批量下载
+        moreDown: '/oa/contract/bachDownload',
         // 全局节点
         step: '/oa/contract/getStepName',
         // 续签
         renewal: '/oa/contract/renewal',
+        // 修改合同编号
+        number: '/oa/contract/alterNumber',
     },
     // 基础信息
     base: {

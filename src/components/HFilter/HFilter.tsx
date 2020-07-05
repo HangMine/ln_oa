@@ -22,6 +22,7 @@ import moment from 'moment';
 import { timeFormat, handleCheckbox, arr2d } from '@/assets/js/common';
 import axios from 'axios';
 import { isNumber, numClear } from '@/assets/js/check';
+import FileSaver from 'file-saver';
 
 const { TextArea } = Input;
 const { Option } = Select;
@@ -29,7 +30,7 @@ const CheckboxGroup = Checkbox.Group;
 const { MonthPicker, RangePicker, WeekPicker } = DatePicker;
 
 // 根据类型返回单个表单
-const getFormItem = (item: filterItem, c_data: filters, setc_data: any, form: any, isMobile: boolean) => {
+const getFormItem = (item: filterItem, c_data: filters, setc_data: any, form: any, isMobile: boolean, row?: obj) => {
     item = handleProp(item, form);
     switch (item.type) {
         case 'input':
@@ -159,6 +160,16 @@ const getFormItem = (item: filterItem, c_data: filters, setc_data: any, form: an
                             break;
                     }
                 },
+                onDownload(file: any) {
+                    // 不走浏览器默认行为，通过fileSaver下载
+                    const path = file.url.split('/./')[1];
+                    const isDev = process.env.NODE_ENV === 'development';
+                    const BASE_URL = isDev ? '/api' : '';
+                    const url = `${BASE_URL}/${path}`;
+                    axios(url, { responseType: 'blob' }).then((res) => {
+                        FileSaver.saveAs(res.data, file.name);
+                    });
+                },
                 headers: {
                     authorization: 'authorization-text',
                 },
@@ -203,7 +214,7 @@ const getFormItem = (item: filterItem, c_data: filters, setc_data: any, form: an
                     <Button>
                         <Icon type="upload" /> 点击上传
                     </Button>
-                    <Button type="dashed" onClick={(e) => moreDown(e, item, form)}>
+                    <Button type="dashed" onClick={(e) => moreDown(e, item, form, row)}>
                         <Icon type="download" /> 打包下载
                     </Button>
                 </Upload>
@@ -295,7 +306,7 @@ const handleProp = (filter: filterItem, form: any) => {
 };
 
 // 批量下载
-const moreDown = (e: any, item: filterItem, form: any) => {
+const moreDown = (e: any, item: filterItem, form: any, row?: obj) => {
     e.stopPropagation();
     const { getFieldsValue } = form;
     const values = getFieldsValue();
@@ -306,7 +317,8 @@ const moreDown = (e: any, item: filterItem, form: any) => {
     }
     const srcs = srcItems.map((item: obj) => item.url);
     const srcString = srcs.join();
-    const exportUrl = params2query(getUrl('pub.moreDown'), { file_name: srcString }, true);
+    const params = { file_name: srcString, number: (row && row.number) || undefined };
+    const exportUrl = params2query(getUrl('pub.moreDown'), params, true);
     window.open(exportUrl);
 };
 
@@ -318,6 +330,7 @@ type HFilter = {
     cols?: 1 | 2 | 3 | 4 | 6 | 8;
     // 是否是筛选框
     isFilt?: boolean;
+    row?: obj;
     onForm?: (arg: any) => void;
     onSearch?: (filterParams: obj) => void;
     [any: string]: any;
@@ -333,6 +346,7 @@ const HFilter: React.FC<HFilter & FormComponentProps> = ({
     data,
     cols,
     isFilt,
+    row,
     onForm,
     onSearch,
     ...otherProps
@@ -506,7 +520,7 @@ const HFilter: React.FC<HFilter & FormComponentProps> = ({
                 getValueFromEvent: item.type === 'upload' ? getValueFromEvent : undefined,
             })(
                 (typeof item.tsx === 'function' ? item.tsx(form) : item.tsx) ||
-                    getFormItem(item, c_data, setc_data, form, isMobile)
+                    getFormItem(item, c_data, setc_data, form, isMobile, row)
             )}
         </Form.Item>
     );

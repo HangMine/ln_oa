@@ -20,6 +20,11 @@ const editUrl = 'contract.base.operate';
 // 筛选框
 const tableFilters = [
     {
+        key: 'number',
+        title: '合同编号',
+        type: 'input',
+    },
+    {
         key: 'key',
         title: '搜索键',
         type: 'select',
@@ -737,7 +742,7 @@ const Base: FC = () => {
                         );
 
                     default:
-                        break;
+                        return value;
                 }
             },
         },
